@@ -4,9 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { strapiLogin } from "@/lib/strapi";
 import { setToken } from "@/lib/auth";
+import { useLocale } from "@/lib/i18n/locale-provider";
+import { withLocale } from "@/lib/i18n/routing";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const { locale, dict } = useLocale();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,9 +22,9 @@ export default function AdminLoginPage() {
     try {
       const { jwt } = await strapiLogin(email, password);
       setToken(jwt);
-      router.push("/admin");
+      router.push(withLocale(locale, "/admin"));
     } catch {
-      setError("بيانات الدخول غير صحيحة");
+      setError(dict.admin.invalidLogin);
     } finally {
       setLoading(false);
     }
@@ -30,11 +33,11 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-5">
       <div className="w-full max-w-sm card-surface p-8">
-        <h1 className="text-xl font-semibold">لوحة التحكم</h1>
-        <p className="mt-2 text-sm text-muted">سجّل الدخول بحساب Strapi</p>
+        <h1 className="text-xl font-semibold">{dict.admin.loginTitle}</h1>
+        <p className="mt-2 text-sm text-muted">{dict.admin.loginDesc}</p>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <div>
-            <label className="text-xs text-muted">البريد</label>
+            <label className="text-xs text-muted">{dict.admin.email}</label>
             <input
               type="email"
               value={email}
@@ -45,7 +48,7 @@ export default function AdminLoginPage() {
             />
           </div>
           <div>
-            <label className="text-xs text-muted">كلمة المرور</label>
+            <label className="text-xs text-muted">{dict.admin.password}</label>
             <input
               type="password"
               value={password}
@@ -61,18 +64,18 @@ export default function AdminLoginPage() {
             disabled={loading}
             className="h-11 w-full rounded-xl bg-white text-sm font-medium text-black"
           >
-            {loading ? "جاري الدخول..." : "دخول"}
+            {loading ? dict.admin.loggingIn : dict.admin.login}
           </button>
         </form>
         <p className="mt-6 text-center text-xs text-muted">
-          أو استخدم{" "}
+          {dict.admin.strapiLink}{" "}
           <a
             href={process.env.NEXT_PUBLIC_STRAPI_URL + "/admin"}
             target="_blank"
             rel="noopener noreferrer"
             className="text-pill-text underline"
           >
-            لوحة Strapi
+            {dict.admin.strapiAdmin}
           </a>
         </p>
       </div>

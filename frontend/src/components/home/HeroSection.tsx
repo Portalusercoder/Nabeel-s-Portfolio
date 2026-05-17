@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { useLocale } from "@/lib/i18n/locale-provider";
 
 export function HeroSection() {
@@ -17,9 +17,9 @@ export function HeroSection() {
         </p>
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {dict.hero.cards.map((card) => (
-            <Link
+            <LocaleLink
               key={card.title}
-              href={card.href}
+              href={card.href.startsWith("#") ? card.href : `/${card.href}`}
               className="group relative card-surface p-5 transition hover:bg-card-hover"
             >
               {card.badge === "online" && (
@@ -29,7 +29,7 @@ export function HeroSection() {
               )}
               <p className="text-base font-medium text-foreground">{card.title}</p>
               <p className="mt-2 text-sm text-muted">{card.subtitle}</p>
-            </Link>
+            </LocaleLink>
           ))}
         </div>
       </div>

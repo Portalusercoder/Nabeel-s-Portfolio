@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { ArrowLeft, ArrowRight, BookOpen, Video, Users } from "lucide-react";
 import { useLocale } from "@/lib/i18n/locale-provider";
 
@@ -13,15 +13,15 @@ export function ProductsSection() {
   return (
     <section className="px-5 py-16 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <Link href="/resources" className="mb-8 inline-flex items-center gap-2 text-lg font-medium">
+        <LocaleLink href="/resources" className="mb-8 inline-flex items-center gap-2 text-lg font-medium">
           {dict.products.title}
           <Arrow className="h-4 w-4 text-muted" />
-        </Link>
+        </LocaleLink>
         <div className="grid gap-4 sm:grid-cols-3">
           {dict.products.items.map((product, i) => {
             const Icon = icons[i] ?? BookOpen;
             return (
-              <Link
+              <LocaleLink
                 key={product.title}
                 href="/resources"
                 className="card-surface group flex flex-col p-5 transition hover:bg-card-hover"
@@ -31,7 +31,7 @@ export function ProductsSection() {
                   <p className="text-sm font-medium leading-snug">{product.title}</p>
                   <span className="shrink-0 text-sm font-semibold">{product.price}</span>
                 </div>
-              </Link>
+              </LocaleLink>
             );
           })}
         </div>

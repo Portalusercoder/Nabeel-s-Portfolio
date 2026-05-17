@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { cn } from "@/lib/utils";
@@ -13,10 +13,10 @@ export function WorksSection() {
     <section id="works" className="px-5 py-16 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex items-center justify-between">
-          <Link href="/#works" className="flex items-center gap-2 text-lg font-medium">
+          <LocaleLink href="/#works" className="flex items-center gap-2 text-lg font-medium">
             {dict.works.title}
             <Arrow className="h-4 w-4 text-muted" />
-          </Link>
+          </LocaleLink>
         </div>
         <div className="grid gap-5 md:grid-cols-2">
           {dict.works.items.map((work) => (

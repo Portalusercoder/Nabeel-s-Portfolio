@@ -1,52 +1,48 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLocale } from "@/lib/i18n/locale-provider";
-import type { Locale } from "@/lib/i18n/types";
+import { swapLocalePath } from "@/lib/i18n/routing";
+import { LOCALES, type Locale } from "@/lib/i18n/types";
 import { cn } from "@/lib/utils";
 
 export function LanguageSwitcher({ className }: { className?: string }) {
-  const { locale, setLocale, dict } = useLocale();
-
-  const toggle = () => setLocale(locale === "ar" ? "en" : "ar");
+  const pathname = usePathname();
+  const { locale, dict } = useLocale();
+  const otherLocale: Locale = locale === "ar" ? "en" : "ar";
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
+    <Link
+      href={swapLocalePath(pathname, otherLocale)}
       className={cn(
         "rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition hover:border-foreground/30 hover:text-foreground",
         className
       )}
-      aria-label={`Switch language to ${locale === "ar" ? "English" : "Arabic"}`}
+      aria-label={locale === "ar" ? "Switch to English" : "Switch to Arabic"}
     >
       {dict.lang.switchTo}
-    </button>
+    </Link>
   );
 }
 
 export function LanguageTabs({ className }: { className?: string }) {
-  const { locale, setLocale, dict } = useLocale();
-  const options: { id: Locale; label: string }[] = [
-    { id: "ar", label: dict.lang.ar },
-    { id: "en", label: dict.lang.en },
-  ];
+  const pathname = usePathname();
+  const { locale, dict } = useLocale();
 
   return (
     <div className={cn("flex rounded-full border border-border p-0.5", className)}>
-      {options.map((opt) => (
-        <button
-          key={opt.id}
-          type="button"
-          onClick={() => setLocale(opt.id)}
+      {LOCALES.map((loc) => (
+        <Link
+          key={loc}
+          href={swapLocalePath(pathname, loc)}
           className={cn(
             "rounded-full px-3 py-1 text-xs font-medium transition",
-            locale === opt.id
-              ? "bg-white text-black"
-              : "text-muted hover:text-foreground"
+            locale === loc ? "bg-white text-black" : "text-muted hover:text-foreground"
           )}
         >
-          {opt.label}
-        </button>
+          {loc === "ar" ? dict.lang.ar : dict.lang.en}
+        </Link>
       ))}
     </div>
   );

@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, MoreHorizontal } from "lucide-react";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { Button } from "@/components/ui/Button";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { dict } = useLocale();
-  const isAdmin = pathname.startsWith("/admin");
+  const isAdmin = /\/admin(\/|$)/.test(pathname);
 
   if (isAdmin) return null;
 
@@ -37,16 +37,18 @@ export function Header() {
 
         <nav className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (
-            <Link
+            <LocaleLink
               key={link.href}
               href={link.href}
               className={cn(
                 "text-sm transition-colors",
-                pathname === link.href ? "text-foreground" : "text-muted hover:text-foreground"
+                pathname.endsWith(link.href.replace("/", "")) || pathname.includes(link.href)
+                  ? "text-foreground"
+                  : "text-muted hover:text-foreground"
               )}
             >
               {link.label}
-            </Link>
+            </LocaleLink>
           ))}
           <button type="button" className="text-muted hover:text-foreground" aria-label={dict.nav.more}>
             <MoreHorizontal className="h-5 w-5" />
@@ -55,12 +57,12 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher className="sm:hidden" />
-          <Link
+          <LocaleLink
             href="/"
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-pill-text"
           >
             {dict.site.name.charAt(0)}
-          </Link>
+          </LocaleLink>
         </div>
 
         <button
@@ -77,14 +79,14 @@ export function Header() {
         <div className="border-t border-border px-5 py-5 md:hidden">
           <nav className="flex flex-col gap-3">
             {navLinks.map((link) => (
-              <Link
+              <LocaleLink
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
                 className="text-base text-muted hover:text-foreground"
               >
                 {link.label}
-              </Link>
+              </LocaleLink>
             ))}
             <Button href="/resources#contact" variant="outline" className="mt-2 w-full">
               {dict.nav.startConsultation}

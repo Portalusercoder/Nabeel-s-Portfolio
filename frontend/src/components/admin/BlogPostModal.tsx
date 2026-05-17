@@ -1,23 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X, Loader2 } from "lucide-react";
 import { createBlogPost, updateBlogPost, type BlogPost } from "@/lib/strapi";
+import { useLocale } from "@/lib/i18n/locale-provider";
 
-const schema = z.object({
-  title: z.string().min(3, "العنوان مطلوب"),
-  slug: z.string().optional(),
-  excerpt: z.string().optional(),
-  content: z.string().min(10, "المحتوى مطلوب"),
-  author: z.string().optional(),
-  category: z.string().optional(),
-  readTime: z.number().optional(),
-});
-
-type FormData = z.infer<typeof schema>;
+type FormData = {
+  title: string;
+  slug?: string;
+  excerpt?: string;
+  content: string;
+  author?: string;
+  category?: string;
+  readTime?: number;
+};
 
 export function BlogPostModal({
   open,
@@ -32,6 +31,22 @@ export function BlogPostModal({
   post: BlogPost | null;
   onSaved: () => void;
 }) {
+  const { dict } = useLocale();
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        title: z.string().min(3, dict.admin.validationTitle),
+        slug: z.string().optional(),
+        excerpt: z.string().optional(),
+        content: z.string().min(10, dict.admin.validationContent),
+        author: z.string().optional(),
+        category: z.string().optional(),
+        readTime: z.number().optional(),
+      }),
+    [dict]
+  );
+
   const {
     register,
     handleSubmit,
@@ -46,12 +61,12 @@ export function BlogPostModal({
         slug: post?.slug || "",
         excerpt: post?.excerpt || "",
         content: post?.content?.replace(/<[^>]+>/g, "") || post?.content || "",
-        author: post?.author || "نبيل",
+        author: post?.author || dict.site.name,
         category: post?.category || "Insights",
         readTime: post?.readTime || 5,
       });
     }
-  }, [open, post, reset]);
+  }, [open, post, reset, dict.site.name]);
 
   if (!open) return null;
 
@@ -76,27 +91,29 @@ export function BlogPostModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border bg-card p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{post ? "تعديل مقال" : "مقال جديد"}</h2>
+          <h2 className="text-lg font-semibold">
+            {post ? dict.admin.editPost : dict.admin.newPost}
+          </h2>
           <button type="button" onClick={onClose} className="text-muted hover:text-foreground">
             <X className="h-5 w-5" />
           </button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="text-xs text-muted">العنوان</label>
+            <label className="text-xs text-muted">{dict.admin.titleLabel}</label>
             <input {...register("title")} className={inputClass} />
             {errors.title && <p className="text-xs text-red-400">{errors.title.message}</p>}
           </div>
           <div>
-            <label className="text-xs text-muted">الرابط (slug)</label>
+            <label className="text-xs text-muted">{dict.admin.slugLabel}</label>
             <input {...register("slug")} className={inputClass} dir="ltr" />
           </div>
           <div>
-            <label className="text-xs text-muted">ملخص</label>
+            <label className="text-xs text-muted">{dict.admin.excerptLabel}</label>
             <textarea {...register("excerpt")} rows={2} className={inputClass} />
           </div>
           <div>
-            <label className="text-xs text-muted">المحتوى</label>
+            <label className="text-xs text-muted">{dict.admin.contentLabel}</label>
             <textarea {...register("content")} rows={8} className={inputClass} />
             {errors.content && <p className="text-xs text-red-400">{errors.content.message}</p>}
           </div>
@@ -105,7 +122,7 @@ export function BlogPostModal({
             disabled={isSubmitting}
             className="flex h-11 w-full items-center justify-center rounded-xl bg-white text-sm font-medium text-black"
           >
-            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "حفظ"}
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : dict.admin.save}
           </button>
         </form>
       </div>

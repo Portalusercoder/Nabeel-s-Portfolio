@@ -98,6 +98,45 @@ export type Dictionary = {
     ar: string;
     en: string;
   };
+  admin: {
+    title: string;
+    loginTitle: string;
+    loginDesc: string;
+    email: string;
+    password: string;
+    login: string;
+    loggingIn: string;
+    invalidLogin: string;
+    strapiLink: string;
+    strapiAdmin: string;
+    logout: string;
+    posts: string;
+    subscribers: string;
+    newPost: string;
+    editPost: string;
+    save: string;
+    titleLabel: string;
+    slugLabel: string;
+    excerptLabel: string;
+    contentLabel: string;
+    category: string;
+    date: string;
+    actions: string;
+    loading: string;
+    noSubscribers: string;
+    strapiNote: string;
+    emailCol: string;
+    nameCol: string;
+    sourceCol: string;
+    subscribedCol: string;
+    validationTitle: string;
+    validationContent: string;
+    deleteConfirm: string;
+    deleteFailed: string;
+    blogPostsStat: string;
+    newsletterStat: string;
+    strapiBackend: string;
+  };
 };
 
 const ar: Dictionary = {
@@ -125,9 +164,9 @@ const ar: Dictionary = {
   },
   hero: {
     cards: [
-      { title: "ابدأ معي", subtitle: "احجز استشارة", href: "/resources#contact", badge: "online" },
-      { title: "مقالات", subtitle: "+١٥٠ مقال في بيع الخبرة", href: "/blog" },
-      { title: "اعمل معي", subtitle: "خدماتي وباقاتي", href: "/#services" },
+      { title: "ابدأ معي", subtitle: "احجز استشارة", href: "resources#contact", badge: "online" },
+      { title: "مقالات", subtitle: "+١٥٠ مقال في بيع الخبرة", href: "blog" },
+      { title: "اعمل معي", subtitle: "خدماتي وباقاتي", href: "#services" },
     ],
   },
   works: {
@@ -232,6 +271,45 @@ const ar: Dictionary = {
     ar: "العربية",
     en: "English",
   },
+  admin: {
+    title: "لوحة التحكم",
+    loginTitle: "لوحة التحكم",
+    loginDesc: "سجّل الدخول بحساب Strapi",
+    email: "البريد",
+    password: "كلمة المرور",
+    login: "دخول",
+    loggingIn: "جاري الدخول...",
+    invalidLogin: "بيانات الدخول غير صحيحة",
+    strapiLink: "أو استخدم",
+    strapiAdmin: "لوحة Strapi",
+    logout: "تسجيل الخروج",
+    posts: "المقالات",
+    subscribers: "المشتركون",
+    newPost: "مقال جديد",
+    editPost: "تعديل مقال",
+    save: "حفظ",
+    titleLabel: "العنوان",
+    slugLabel: "الرابط (slug)",
+    excerptLabel: "ملخص",
+    contentLabel: "المحتوى",
+    category: "التصنيف",
+    date: "التاريخ",
+    actions: "إجراءات",
+    loading: "جاري التحميل...",
+    noSubscribers: "لا يوجد مشتركون بعد.",
+    strapiNote: "إدارة الوسائط والمحتوى المتقدم من Strapi",
+    emailCol: "البريد",
+    nameCol: "الاسم",
+    sourceCol: "المصدر",
+    subscribedCol: "تاريخ الاشتراك",
+    validationTitle: "العنوان مطلوب",
+    validationContent: "المحتوى مطلوب",
+    deleteConfirm: "حذف هذا المقال؟",
+    deleteFailed: "تعذّر الحذف. تأكد من تشغيل Strapi والصلاحيات.",
+    blogPostsStat: "المقالات",
+    newsletterStat: "المشتركون",
+    strapiBackend: "خادم Strapi",
+  },
 };
 
 const en: Dictionary = {
@@ -259,9 +337,9 @@ const en: Dictionary = {
   },
   hero: {
     cards: [
-      { title: "Start here", subtitle: "Book a consultation", href: "/resources#contact", badge: "online" },
-      { title: "Articles", subtitle: "150+ posts on selling expertise", href: "/blog" },
-      { title: "Work with me", subtitle: "Services & packages", href: "/#services" },
+      { title: "Start here", subtitle: "Book a consultation", href: "resources#contact", badge: "online" },
+      { title: "Articles", subtitle: "150+ posts on selling expertise", href: "blog" },
+      { title: "Work with me", subtitle: "Services & packages", href: "#services" },
     ],
   },
   works: {
@@ -365,6 +443,45 @@ const en: Dictionary = {
     switchTo: "العربية",
     ar: "العربية",
     en: "English",
+  },
+  admin: {
+    title: "Dashboard",
+    loginTitle: "Dashboard",
+    loginDesc: "Sign in with your Strapi account",
+    email: "Email",
+    password: "Password",
+    login: "Sign in",
+    loggingIn: "Signing in...",
+    invalidLogin: "Invalid credentials",
+    strapiLink: "Or use",
+    strapiAdmin: "Strapi admin",
+    logout: "Log out",
+    posts: "Posts",
+    subscribers: "Subscribers",
+    newPost: "New post",
+    editPost: "Edit post",
+    save: "Save",
+    titleLabel: "Title",
+    slugLabel: "Slug",
+    excerptLabel: "Excerpt",
+    contentLabel: "Content",
+    category: "Category",
+    date: "Date",
+    actions: "Actions",
+    loading: "Loading...",
+    noSubscribers: "No subscribers yet.",
+    strapiNote: "Manage media and advanced content in Strapi",
+    emailCol: "Email",
+    nameCol: "Name",
+    sourceCol: "Source",
+    subscribedCol: "Subscribed",
+    validationTitle: "Title is required",
+    validationContent: "Content is required",
+    deleteConfirm: "Delete this post?",
+    deleteFailed: "Delete failed. Ensure Strapi is running and you have permissions.",
+    blogPostsStat: "Blog posts",
+    newsletterStat: "Newsletter signups",
+    strapiBackend: "Strapi backend",
   },
 };
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { cn } from "@/lib/utils";
 
 type ButtonProps = {
@@ -43,9 +43,9 @@ export function Button({
 
   if (href) {
     return (
-      <Link href={href} className={classes} {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>
+      <LocaleLink href={href} className={classes} {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>
         {children}
-      </Link>
+      </LocaleLink>
     );
   }
 

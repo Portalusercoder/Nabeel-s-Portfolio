@@ -5,26 +5,33 @@ import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { getResources } from "@/lib/strapi";
 import { getMockResources } from "@/lib/mock-data";
-import { getDictionary } from "@/lib/i18n/dictionaries";
-import { getLocale } from "@/lib/i18n/server";
+import { getTranslations } from "@/lib/i18n/server";
+import { type Locale } from "@/lib/i18n/types";
+import { withLocale } from "@/lib/i18n/routing";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
-  const dict = getDictionary(locale);
+type PageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale: raw } = await params;
+  const { dict } = await getTranslations(raw);
   return { title: dict.resources.title, description: dict.resources.description };
 }
 
-export default async function ResourcesPage() {
-  const locale = await getLocale();
-  const dict = getDictionary(locale);
+export default async function ResourcesPage({ params }: PageProps) {
+  const { locale: raw } = await params;
+  const { locale, dict } = await getTranslations(raw);
+  const validLocale = locale as Locale;
   const resources = await getResources();
-  const display = resources.length > 0 ? resources : getMockResources(locale);
-  const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
+  const display = resources.length > 0 ? resources : getMockResources(validLocale);
+  const Arrow = validLocale === "ar" ? ArrowLeft : ArrowRight;
 
   return (
     <div className="px-5 py-16 lg:px-8 lg:py-24">
       <div className="mx-auto max-w-6xl">
-        <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm text-muted hover:text-foreground">
+        <Link
+          href={withLocale(validLocale, "/")}
+          className="mb-8 inline-flex items-center gap-2 text-sm text-muted hover:text-foreground"
+        >
           <Arrow className="h-4 w-4" />
           {dict.resources.backHome}
         </Link>
@@ -36,7 +43,9 @@ export default async function ResourcesPage() {
               <FileText className="h-5 w-5 text-muted" strokeWidth={1.5} />
               <span className="mt-4 text-xs text-muted">{resource.category}</span>
               <h2 className="mt-2 font-medium">{resource.title}</h2>
-              {resource.description && <p className="mt-2 flex-1 text-sm text-muted">{resource.description}</p>}
+              {resource.description && (
+                <p className="mt-2 flex-1 text-sm text-muted">{resource.description}</p>
+              )}
               <button type="button" className="mt-6 inline-flex items-center gap-2 text-sm text-pill-text">
                 <Download className="h-4 w-4" />
                 {resource.file?.url ? dict.resources.download : dict.resources.requestDownload}
@@ -47,12 +56,16 @@ export default async function ResourcesPage() {
         <section className="mt-20 border-t border-border pt-16">
           <h2 className="text-xl font-semibold">{dict.resources.newsletterTitle}</h2>
           <p className="mt-2 text-muted">{dict.resources.newsletterDesc}</p>
-          <div className="mt-6 max-w-md"><NewsletterForm source="resources" /></div>
+          <div className="mt-6 max-w-md">
+            <NewsletterForm source="resources" />
+          </div>
         </section>
         <section id="contact" className="mt-20 scroll-mt-24 border-t border-border pt-16">
           <h2 className="text-xl font-semibold">{dict.resources.contactTitle}</h2>
           <p className="mt-2 text-muted">{dict.resources.contactDesc}</p>
-          <div className="mt-8 max-w-lg"><ContactForm /></div>
+          <div className="mt-8 max-w-lg">
+            <ContactForm />
+          </div>
         </section>
       </div>
     </div>

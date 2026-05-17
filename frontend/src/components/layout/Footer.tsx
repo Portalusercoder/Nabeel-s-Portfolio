@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { SITE_EMAIL } from "@/lib/constants";
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { useLocale } from "@/lib/i18n/locale-provider";
 
 export function Footer() {
@@ -15,15 +15,15 @@ export function Footer() {
           <a href={`mailto:${SITE_EMAIL}`} className="hover:text-foreground">
             {SITE_EMAIL}
           </a>
-          <Link href="/resources" className="hover:text-foreground">
+          <LocaleLink href="/resources" className="hover:text-foreground">
             {dict.footer.newsletter}
-          </Link>
-          <Link href="/resources#contact" className="hover:text-foreground">
+          </LocaleLink>
+          <LocaleLink href="/resources#contact" className="hover:text-foreground">
             {dict.footer.bookConsultation}
-          </Link>
-          <Link href="/admin" className="hover:text-foreground">
+          </LocaleLink>
+          <LocaleLink href="/admin" className="hover:text-foreground">
             {dict.footer.admin}
-          </Link>
+          </LocaleLink>
         </div>
       </div>
     </footer>

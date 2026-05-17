@@ -4,43 +4,46 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import { getBlogPost, getBlogPosts } from "@/lib/strapi";
 import { getMockBlogPosts } from "@/lib/mock-data";
-import { getDictionary } from "@/lib/i18n/dictionaries";
-import { getLocale } from "@/lib/i18n/server";
+import { getTranslations } from "@/lib/i18n/server";
+import { LOCALES, type Locale } from "@/lib/i18n/types";
+import { withLocale } from "@/lib/i18n/routing";
 import { formatDate } from "@/lib/utils";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
   const ar = posts.length > 0 ? posts : getMockBlogPosts("ar");
   const en = getMockBlogPosts("en");
   const slugs = new Set([...ar, ...en].map((p) => p.slug));
-  return [...slugs].map((slug) => ({ slug }));
+  return LOCALES.flatMap((locale) => [...slugs].map((slug) => ({ locale, slug })));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const locale = await getLocale();
+  const { locale: raw, slug } = await params;
+  const { locale, dict } = await getTranslations(raw);
   const mock = getMockBlogPosts(locale);
   const post = (await getBlogPost(slug)) || mock.find((p) => p.slug === slug);
-  const dict = getDictionary(locale);
   if (!post) return { title: dict.blog.notFound };
   return { title: post.title, description: post.excerpt };
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params;
-  const locale = await getLocale();
-  const dict = getDictionary(locale);
-  const mock = getMockBlogPosts(locale);
+  const { locale: raw, slug } = await params;
+  const { locale, dict } = await getTranslations(raw);
+  const validLocale = locale as Locale;
+  const mock = getMockBlogPosts(validLocale);
   const post = (await getBlogPost(slug)) || mock.find((p) => p.slug === slug);
   if (!post) notFound();
 
-  const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
+  const Arrow = validLocale === "ar" ? ArrowLeft : ArrowRight;
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-16 lg:px-8 lg:py-24">
-      <Link href="/blog" className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground">
+      <Link
+        href={withLocale(validLocale, "/blog")}
+        className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground"
+      >
         <Arrow className="h-4 w-4" />
         {dict.blog.backToBlog}
       </Link>
@@ -52,7 +55,7 @@ export default async function BlogPostPage({ params }: Props) {
             {post.readTime} {dict.blog.minRead}
           </span>
         )}
-        {post.publishedAt && <span>{formatDate(post.publishedAt, locale)}</span>}
+        {post.publishedAt && <span>{formatDate(post.publishedAt, validLocale)}</span>}
       </div>
       <h1 className="mt-6 text-3xl font-semibold leading-tight lg:text-4xl">{post.title}</h1>
       {post.author && (
