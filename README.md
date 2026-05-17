@@ -65,9 +65,22 @@ Public permissions are bootstrapped on startup for read (posts/resources) and cr
 
 ## Deployment
 
-- **Frontend:** Vercel — set env vars, build `frontend`
-- **Strapi:** Railway, Render, or DigitalOcean — use PostgreSQL in production instead of SQLite
+### GitHub Pages (static frontend)
+
+GitHub Pages only serves static files. It cannot run Next.js servers or Strapi. The repo includes a workflow that builds the site and deploys the `frontend/out` folder.
+
+1. Push to `main`
+2. On GitHub: **Settings → Pages → Build and deployment → Source:** choose **GitHub Actions**
+3. Wait for the **Deploy to GitHub Pages** workflow to finish
+4. Open `https://<username>.github.io/<repo-name>/` (e.g. `https://portalusercoder.github.io/Nabeel-s-Portfolio/`)
+
+The site uses mock blog/resources data on Pages unless you host Strapi elsewhere and set `NEXT_PUBLIC_STRAPI_URL` in the workflow env. Contact form opens your email client; newsletter posts to Strapi when it is reachable.
+
+### Full stack (recommended for CMS)
+
+- **Frontend:** Vercel — `npm run build` (no `NEXT_PUBLIC_STATIC_EXPORT`)
+- **Strapi:** Railway, Render, or DigitalOcean — PostgreSQL in production
 
 ## Customize branding
 
-Edit `frontend/src/lib/constants.ts` for Arabic copy, nav labels, and hero cards.
+Edit `frontend/src/lib/i18n/dictionaries.ts` for Arabic and English copy.

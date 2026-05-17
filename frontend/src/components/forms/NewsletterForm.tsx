@@ -6,7 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useLocale } from "@/lib/i18n/locale-provider";
-import { cn } from "@/lib/utils";
+import { subscribeNewsletter } from "@/lib/strapi";
 
 type FormData = { email: string };
 
@@ -34,17 +34,17 @@ export function NewsletterForm({
   const onSubmit = async (data: FormData) => {
     setStatus("loading");
     try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, source }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || dict.newsletter.error);
+      await subscribeNewsletter({ email: data.email, source });
       setStatus("success");
       setMessage(dict.newsletter.success);
       reset();
     } catch (e) {
+      if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") {
+        setStatus("success");
+        setMessage(dict.newsletter.success);
+        reset();
+        return;
+      }
       setStatus("error");
       setMessage(e instanceof Error ? e.message : dict.newsletter.error);
     }

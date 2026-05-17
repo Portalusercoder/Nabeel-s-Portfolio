@@ -48,11 +48,14 @@ export async function fetchAPI<T>(
 
   const url = getStrapiURL(`/api${path}`);
 
+  const isServer = typeof window === "undefined";
+  const useStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
   try {
     const res = await fetch(url, {
       ...fetchOptions,
       headers,
-      next: { revalidate: 60 },
+      ...(isServer && !useStaticExport ? { next: { revalidate: 60 } } : { cache: "no-store" }),
     });
 
     if (!res.ok) {

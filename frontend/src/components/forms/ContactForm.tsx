@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { SITE_EMAIL } from "@/lib/constants";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { cn } from "@/lib/utils";
 
@@ -30,18 +31,13 @@ export function ContactForm() {
 
   const onSubmit = async (data: FormData) => {
     setStatus("loading");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Failed");
-      setStatus("success");
-      reset();
-    } catch {
-      setStatus("error");
-    }
+    const subject = encodeURIComponent(`Project inquiry from ${data.name}`);
+    const body = encodeURIComponent(
+      `Name: ${data.name}\nEmail: ${data.email}\nCompany: ${data.company || "—"}\n\n${data.message}`
+    );
+    window.location.href = `mailto:${SITE_EMAIL}?subject=${subject}&body=${body}`;
+    setStatus("success");
+    reset();
   };
 
   const inputClass =
