@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "newsletter_subscribers",
+  "info": {
+    "singularName": "newsletter-subscriber",
+    "pluralName": "newsletter-subscribers",
+    "displayName": "Newsletter Subscriber",
+    "description": "Newsletter signup records"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "name": {
+      "type": "string"
+    },
+    "source": {
+      "type": "enumeration",
+      "enum": ["homepage", "resources", "blog", "footer", "admin"],
+      "default": "resources"
+    },
+    "subscribedAt": {
+      "type": "datetime"
+    }
+  }
+}
