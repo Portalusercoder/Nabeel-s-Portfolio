@@ -27,7 +27,8 @@ export default function AdminLoginPage() {
       navigateLocalized(locale, "/admin");
     } catch (err) {
       const code = err instanceof Error ? err.message : "";
-      if (code === "UNREACHABLE") setError(dict.admin.loginUnreachable);
+      if (code === "CORS_OR_NETWORK") setError(dict.admin.loginCors);
+      else if (code === "UNREACHABLE") setError(dict.admin.loginUnreachable);
       else if (code === "INVALID_CREDENTIALS") setError(dict.admin.loginWrongUser);
       else setError(dict.admin.invalidLogin);
     } finally {

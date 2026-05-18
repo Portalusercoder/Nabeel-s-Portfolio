@@ -240,7 +240,11 @@ export async function subscribeNewsletter(data: {
   });
 }
 
-export type StrapiLoginError = "INVALID_CREDENTIALS" | "UNREACHABLE" | "AUTH_FAILED";
+export type StrapiLoginError =
+  | "INVALID_CREDENTIALS"
+  | "UNREACHABLE"
+  | "CORS_OR_NETWORK"
+  | "AUTH_FAILED";
 
 export async function strapiLogin(identifier: string, password: string) {
   let res: Response;
@@ -250,7 +254,11 @@ export async function strapiLogin(identifier: string, password: string) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ identifier, password }),
     });
-  } catch {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "";
+    if (message.includes("Failed to fetch") || message.includes("NetworkError")) {
+      throw new Error("CORS_OR_NETWORK" satisfies StrapiLoginError);
+    }
     throw new Error("UNREACHABLE" satisfies StrapiLoginError);
   }
 

@@ -102,7 +102,7 @@ Host Strapi for **$0** (with Render free-tier sleep after ~15 min idle).
 | `DATABASE_SSL` | `true` |
 | `DATABASE_SSL_REJECT_UNAUTHORIZED` | `false` |
 | `PUBLIC_URL` | `https://YOUR-SERVICE.onrender.com` |
-| `FRONTEND_URL` | `http://localhost:3000,https://YOUR-USER.github.io/Nabeel-s-Portfolio` |
+| `FRONTEND_URL` | `http://localhost:3000,https://YOUR-USER.github.io` (origin only — **no** `/Nabeel-s-Portfolio` path) |
 | `APP_KEYS` | four random strings (`openssl rand -base64 32`) |
 | `API_TOKEN_SALT`, `JWT_SECRET`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `ENCRYPTION_KEY` | random each |
 

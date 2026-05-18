@@ -153,6 +153,7 @@ export type Dictionary = {
     syncFromSite: string;
     syncing: string;
     syncFailed: string;
+    saveFailed: string;
     localOnly: string;
     inStrapi: string;
     statusCol: string;
@@ -163,6 +164,7 @@ export type Dictionary = {
     loginUserHint: string;
     loginWrongUser: string;
     loginUnreachable: string;
+    loginCors: string;
     loginMisconfigured: string;
   };
 };
@@ -374,6 +376,7 @@ const ar: Dictionary = {
     syncFromSite: "مزامنة المقالات من الموقع",
     syncing: "جاري المزامنة...",
     syncFailed: "فشلت المزامنة. تأكد من تشغيل Strapi وصلاحيات الحساب.",
+    saveFailed: "تعذّر الحفظ. سجّل الدخول وتأكد أن Strapi يعمل وأن المنشور ليس «محلي فقط» إن كنت تحرّره.",
     localOnly: "محلي فقط",
     inStrapi: "في Strapi",
     statusCol: "الحالة",
@@ -386,6 +389,8 @@ const ar: Dictionary = {
     loginWrongUser: "بيانات الدخول غير صحيحة. تأكد أن الدور Authenticated ومفعّل Confirmed.",
     loginUnreachable:
       "تعذّر الاتصال بـ Strapi. انتظر دقيقة إذا كان الخادم على Render (وضع مجاني) ثم أعد المحاولة.",
+    loginCors:
+      "المتصفح منع الاتصال (CORS). في Render عيّن FRONTEND_URL=https://portalusercoder.github.io (بدون مسار المشروع) ثم أعد نشر Strapi.",
     loginMisconfigured:
       "الموقع ما زال مبنيًا بدون رابط Strapi. في GitHub: Settings → Secrets and variables → Actions → Repository secrets، الاسم بالضبط NEXT_PUBLIC_STRAPI_URL، ثم Actions → Deploy to GitHub Pages → Run workflow.",
   },
@@ -598,6 +603,7 @@ const en: Dictionary = {
     syncFromSite: "Sync posts from site",
     syncing: "Syncing...",
     syncFailed: "Sync failed. Ensure Strapi is running and your account has permissions.",
+    saveFailed: "Save failed. Sign in, ensure Strapi is reachable, and use Publish to Strapi for local-only posts.",
     localOnly: "Local only",
     inStrapi: "In Strapi",
     statusCol: "Status",
@@ -610,6 +616,8 @@ const en: Dictionary = {
     loginWrongUser: "Invalid login. Use an Authenticated user with Confirmed enabled.",
     loginUnreachable:
       "Cannot reach Strapi. On Render free tier, wait ~1 minute for the server to wake up, then try again.",
+    loginCors:
+      "Browser blocked the request (CORS). On Render set FRONTEND_URL=https://portalusercoder.github.io (no repo path), then redeploy Strapi.",
     loginMisconfigured:
       "This build still has no Strapi URL. In GitHub: Settings → Secrets and variables → Actions → Repository secrets, name exactly NEXT_PUBLIC_STRAPI_URL, then Actions → Deploy to GitHub Pages → Run workflow.",
   },

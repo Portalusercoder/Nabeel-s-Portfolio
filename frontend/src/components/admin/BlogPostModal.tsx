@@ -79,13 +79,17 @@ export function BlogPostModal({
       language: locale,
       content: `<p>${data.content.replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br/>")}</p>`,
     };
-    if (post?.documentId) {
-      await updateBlogPost(token, post.documentId, payload);
-    } else {
-      await createBlogPost(token, { ...payload, language: locale });
+    try {
+      if (post?.documentId) {
+        await updateBlogPost(token, post.documentId, payload);
+      } else {
+        await createBlogPost(token, { ...payload, language: locale });
+      }
+      onSaved();
+      onClose();
+    } catch {
+      alert(dict.admin.saveFailed);
     }
-    onSaved();
-    onClose();
   };
 
   const inputClass =

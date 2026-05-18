@@ -29,8 +29,9 @@ services:
         sync: false
       - key: PUBLIC_URL
         sync: false
+      # Origins only (no path): https://portalusercoder.github.io
       - key: FRONTEND_URL
-        sync: false
+        value: https://portalusercoder.github.io
       - key: APP_KEYS
         generateValue: true
       - key: API_TOKEN_SALT
