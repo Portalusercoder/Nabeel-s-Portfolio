@@ -114,9 +114,11 @@ Host Strapi for **$0** (with Render free-tier sleep after ~15 min idle).
 
 #### 3. Connect GitHub Pages to Strapi
 
-1. GitHub repo → **Settings → Secrets and variables → Actions**
-2. New secret: `NEXT_PUBLIC_STRAPI_URL` = `https://YOUR-SERVICE.onrender.com`
-3. Push to `main` (or re-run **Deploy to GitHub Pages** workflow)
+1. GitHub repo → **Settings → Secrets and variables → Actions → Repository secrets** (not only *Environment* secrets)
+2. Name **exactly** `NEXT_PUBLIC_STRAPI_URL` = `https://YOUR-SERVICE.onrender.com` (no trailing slash)
+3. Push to `main` or **Actions → Deploy to GitHub Pages → Run workflow**
+
+If the workflow fails on “Verify Strapi URL”, the secret name or location is wrong. The live site bakes this URL at build time — adding the secret without re-running the workflow leaves `localhost` in the bundle.
 
 Blog pages are still **pre-built** on each deploy; new Strapi posts appear after the workflow runs again. The **portfolio admin** (`/ar/admin`) loads live data in the browser.
 

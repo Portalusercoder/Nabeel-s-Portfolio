@@ -387,7 +387,7 @@ const ar: Dictionary = {
     loginUnreachable:
       "تعذّر الاتصال بـ Strapi. انتظر دقيقة إذا كان الخادم على Render (وضع مجاني) ثم أعد المحاولة.",
     loginMisconfigured:
-      "الموقع لا يتصل بـ Strapi على Render. أضف NEXT_PUBLIC_STRAPI_URL في GitHub → Settings → Secrets ثم أعد نشر الموقع.",
+      "الموقع ما زال مبنيًا بدون رابط Strapi. في GitHub: Settings → Secrets and variables → Actions → Repository secrets، الاسم بالضبط NEXT_PUBLIC_STRAPI_URL، ثم Actions → Deploy to GitHub Pages → Run workflow.",
   },
 };
 
@@ -611,7 +611,7 @@ const en: Dictionary = {
     loginUnreachable:
       "Cannot reach Strapi. On Render free tier, wait ~1 minute for the server to wake up, then try again.",
     loginMisconfigured:
-      "This site is not linked to Render Strapi. Add NEXT_PUBLIC_STRAPI_URL in GitHub → Settings → Secrets, then redeploy.",
+      "This build still has no Strapi URL. In GitHub: Settings → Secrets and variables → Actions → Repository secrets, name exactly NEXT_PUBLIC_STRAPI_URL, then Actions → Deploy to GitHub Pages → Run workflow.",
   },
 };
 
