@@ -25,7 +25,7 @@ export default {
 
       if (!permission) {
         await strapi.db.query("plugin::users-permissions.permission").create({
-          data: { action, role: publicRole.id },
+          data: { action, role: publicRole.id, enabled: true },
         });
       }
     }
@@ -59,7 +59,7 @@ export default {
 
       if (!permission) {
         await strapi.db.query("plugin::users-permissions.permission").create({
-          data: { action, role: authenticatedRole.id },
+          data: { action, role: authenticatedRole.id, enabled: true },
         });
       }
     }

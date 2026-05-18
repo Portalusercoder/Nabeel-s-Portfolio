@@ -118,11 +118,14 @@ export async function fetchAPI<T>(
     });
 
     if (!res.ok) {
-      throw new Error(`Strapi error: ${res.status} ${res.statusText}`);
+      const err = new Error(`Strapi error: ${res.status}`) as Error & { status?: number };
+      err.status = res.status;
+      throw err;
     }
 
     return res.json();
-  } catch {
+  } catch (err) {
+    if (err instanceof Error && "status" in err) throw err;
     throw new Error("STRAPI_UNAVAILABLE");
   }
 }

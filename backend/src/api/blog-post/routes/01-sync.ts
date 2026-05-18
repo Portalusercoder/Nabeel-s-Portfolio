@@ -5,8 +5,9 @@ export default {
       path: "/blog-posts/sync-from-site",
       handler: "blog-post.syncFromSite",
       config: {
-        policies: [],
-        middlewares: [],
+        auth: {
+          scope: ["api::blog-post.blog-post.syncFromSite"],
+        },
       },
     },
   ],

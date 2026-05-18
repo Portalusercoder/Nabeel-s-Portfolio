@@ -91,8 +91,10 @@ export function AdminDashboard() {
     try {
       await syncBlogPostsFromSite(token);
       await loadData(token);
-    } catch {
-      alert(dict.admin.syncFailed);
+    } catch (err) {
+      const status = err instanceof Error && "status" in err ? (err as Error & { status?: number }).status : undefined;
+      if (status === 403) alert(dict.admin.syncForbidden);
+      else alert(dict.admin.syncFailed);
     } finally {
       setSyncing(false);
     }

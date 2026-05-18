@@ -153,6 +153,7 @@ export type Dictionary = {
     syncFromSite: string;
     syncing: string;
     syncFailed: string;
+    syncForbidden: string;
     saveFailed: string;
     localOnly: string;
     inStrapi: string;
@@ -376,6 +377,8 @@ const ar: Dictionary = {
     syncFromSite: "مزامنة المقالات من الموقع",
     syncing: "جاري المزامنة...",
     syncFailed: "فشلت المزامنة. تأكد من تشغيل Strapi وصلاحيات الحساب.",
+    syncForbidden:
+      "لا توجد صلاحية للمزامنة. في Strapi: Settings → Users & Permissions → Roles → Authenticated → Blog-post → فعّل syncFromSite، أو أعد نشر Strapi بعد آخر تحديث.",
     saveFailed: "تعذّر الحفظ. سجّل الدخول وتأكد أن Strapi يعمل وأن المنشور ليس «محلي فقط» إن كنت تحرّره.",
     localOnly: "محلي فقط",
     inStrapi: "في Strapi",
@@ -603,6 +606,8 @@ const en: Dictionary = {
     syncFromSite: "Sync posts from site",
     syncing: "Syncing...",
     syncFailed: "Sync failed. Ensure Strapi is running and your account has permissions.",
+    syncForbidden:
+      "No permission to sync. In Strapi: Settings → Users & Permissions → Roles → Authenticated → Blog-post → enable syncFromSite, or redeploy Strapi after the latest update.",
     saveFailed: "Save failed. Sign in, ensure Strapi is reachable, and use Publish to Strapi for local-only posts.",
     localOnly: "Local only",
     inStrapi: "In Strapi",

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getDisplayBlogPosts } from "@/lib/blog-posts";
 import { getTranslations } from "@/lib/i18n/server";
 import { type Locale } from "@/lib/i18n/types";
-import { BlogPostGrid } from "@/components/blog/BlogPostGrid";
+import { LiveBlogList } from "@/components/blog/LiveBlogList";
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -41,7 +41,7 @@ export default async function BlogPage({ params }: PageProps) {
         </header>
 
         <div className="mt-14 lg:mt-16">
-          <BlogPostGrid posts={sorted} locale={validLocale} dict={dict} />
+          <LiveBlogList initialPosts={sorted} locale={validLocale} dict={dict} />
         </div>
       </div>
     </div>
