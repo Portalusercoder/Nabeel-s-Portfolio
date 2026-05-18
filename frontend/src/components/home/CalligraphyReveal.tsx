@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { publicAsset } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
-const LOGO_SRC = "/images/logo.png";
+const LOGO_SRC = publicAsset("/images/logo.png");
 const LOGO_W = 512;
 const LOGO_H = 161;
 const VIEW_BOX = `0 0 ${LOGO_W} ${LOGO_H}`;

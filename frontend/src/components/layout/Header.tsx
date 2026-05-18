@@ -9,6 +9,7 @@ import { LocaleLink } from "@/components/layout/LocaleLink";
 import { Button } from "@/components/ui/Button";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { getLocaleFromPathname } from "@/lib/i18n/routing";
+import { publicAsset } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
 function isNavActive(pathname: string, href: string) {
@@ -64,7 +65,7 @@ export function Header() {
           <LanguageSwitcher className="sm:hidden" />
           <LocaleLink href="/" className="relative block h-9 w-[120px] shrink-0 sm:h-10 sm:w-[140px]">
             <Image
-              src="/images/logo.png"
+              src={publicAsset("/images/logo.png")}
               alt="Nabil Al-Jabri — نبيل الجابري"
               fill
               className="object-contain object-start"

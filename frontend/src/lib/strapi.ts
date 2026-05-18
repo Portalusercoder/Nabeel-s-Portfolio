@@ -1,3 +1,5 @@
+import { publicAsset } from "./assets";
+
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
@@ -8,9 +10,8 @@ export function getStrapiURL(path = "") {
 export function getStrapiMedia(url: string | null | undefined) {
   if (!url) return null;
   if (url.startsWith("http") || url.startsWith("//")) return url;
-  // Only Strapi uploads — keep /images/… and other site paths on the Next origin
-  if (!url.startsWith("/uploads/")) return url;
-  return getStrapiURL(url);
+  if (url.startsWith("/uploads/")) return getStrapiURL(url);
+  return publicAsset(url);
 }
 
 type StrapiResponse<T> = {

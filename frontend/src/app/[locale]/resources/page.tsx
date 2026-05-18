@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { CampaignHighlights } from "@/components/resources/CampaignHighlights";
 import { GuideLeadForm } from "@/components/forms/GuideLeadForm";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { publicAsset } from "@/lib/assets";
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -43,7 +44,7 @@ export default async function ResourcesPage({ params }: PageProps) {
           <div className="card-surface overflow-hidden p-4 sm:p-6">
             <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
               <Image
-                src="/images/campaign-guide-preview.png"
+                src={publicAsset("/images/campaign-guide-preview.png")}
                 alt={dict.resources.badgeLabel}
                 fill
                 className="object-contain"

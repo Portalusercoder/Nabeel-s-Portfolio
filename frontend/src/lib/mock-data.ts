@@ -1,5 +1,6 @@
 import type { BlogPost, Resource } from "./strapi";
 import type { Locale } from "./i18n/types";
+import { publicAsset } from "./assets";
 
 export const BLOG_CARD_TONES = [
   "from-[#3a3a3a] to-[#0a0a0a]",
@@ -20,7 +21,7 @@ const MOCK_BLOG_COVERS = [
 
 function mockBlogCover(index: number): BlogPost["coverImage"] {
   const url = MOCK_BLOG_COVERS[index];
-  return url ? { url } : null;
+  return url ? { url: publicAsset(url) } : null;
 }
 
 const MOCK_BLOG_POSTS_AR: BlogPost[] = [
