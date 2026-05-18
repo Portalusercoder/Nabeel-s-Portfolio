@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "build:pages": "NEXT_PUBLIC_STATIC_EXPORT=true next build",
+    "dev": "node scripts/sync-strapi-url.mjs && next dev",
+    "build": "node scripts/sync-strapi-url.mjs && next build",
+    "build:pages": "node scripts/sync-strapi-url.mjs && NEXT_PUBLIC_STATIC_EXPORT=true next build",
     "start": "next start",
     "lint": "eslint"
   },

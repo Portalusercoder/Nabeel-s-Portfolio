@@ -1,8 +1,8 @@
 import { publicAsset } from "./assets";
+import { STRAPI_PUBLIC_URL } from "./strapi-public-url";
 
 export function getConfiguredStrapiUrl() {
-  const url = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-  return url.replace(/\/$/, "");
+  return STRAPI_PUBLIC_URL.replace(/\/$/, "");
 }
 
 export function getStrapiURL(path = "") {
