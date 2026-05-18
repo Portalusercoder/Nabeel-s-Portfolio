@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   FileText,
   LogOut,
@@ -21,6 +20,8 @@ import {
   deleteBlogPost,
   syncBlogPostsFromSite,
   isStrapiAvailable,
+  isStrapiMisconfiguredOnLiveSite,
+  getConfiguredStrapiUrl,
   type BlogPost,
   type NewsletterSubscriber,
 } from "@/lib/strapi";
@@ -30,12 +31,15 @@ import { Button } from "@/components/ui/Button";
 import { BlogPostModal } from "@/components/admin/BlogPostModal";
 import { formatDate } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/locale-provider";
-import { withLocale } from "@/lib/i18n/routing";
+import { navigateLocalized } from "@/lib/i18n/routing";
 
 export function AdminDashboard() {
-  const router = useRouter();
   const { locale, dict } = useLocale();
-  const [token, setTokenState] = useState<string | null>(null);
+  const [token, setTokenState] = useState<string | null>(() =>
+    typeof window !== "undefined" ? getToken() : null
+  );
+  const [authChecked, setAuthChecked] = useState(false);
+  const misconfigured = isStrapiMisconfiguredOnLiveSite();
   const [stats, setStats] = useState({ postCount: 0, subscriberCount: 0 });
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
@@ -49,13 +53,14 @@ export function AdminDashboard() {
 
   useEffect(() => {
     const t = getToken();
+    setAuthChecked(true);
     if (!t) {
-      router.replace(withLocale(locale, "/admin/login"));
+      navigateLocalized(locale, "/admin/login");
       return;
     }
     setTokenState(t);
     loadData(t);
-  }, [router, locale]);
+  }, [locale]);
 
   async function loadData(jwt: string) {
     setLoading(true);
@@ -95,7 +100,7 @@ export function AdminDashboard() {
 
   function handleLogout() {
     clearToken();
-    router.replace(withLocale(locale, "/admin/login"));
+    navigateLocalized(locale, "/admin/login");
   }
 
   async function handleDelete(post: BlogPost) {
@@ -109,7 +114,13 @@ export function AdminDashboard() {
     }
   }
 
-  if (!token) return null;
+  if (!authChecked || !token) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center text-sm text-muted">
+        {dict.admin.loggingIn}
+      </div>
+    );
+  }
 
   const localOnlyCount = posts.filter((p) => !p.documentId).length;
 
@@ -123,7 +134,7 @@ export function AdminDashboard() {
           </div>
           <div className="flex items-center gap-3">
             <a
-              href={`${process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"}/admin`}
+              href={`${getConfiguredStrapiUrl()}/admin`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-sm text-muted hover:text-foreground"
@@ -144,7 +155,12 @@ export function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-        {strapiOnline === false && (
+        {misconfigured && (
+          <p className="mb-6 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted">
+            {dict.admin.loginMisconfigured}
+          </p>
+        )}
+        {strapiOnline === false && !misconfigured && (
           <p className="mb-6 flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted">
             <CloudOff className="h-4 w-4 shrink-0" />
             {dict.admin.strapiOffline}

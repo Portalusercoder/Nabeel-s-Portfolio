@@ -1,7 +1,23 @@
+import { publicAsset } from "@/lib/assets";
 import { DEFAULT_LOCALE, LOCALES, type Locale } from "./types";
 
 export function isValidLocale(value: string): value is Locale {
   return LOCALES.includes(value as Locale);
+}
+
+/** Locale path with GitHub Pages base path (e.g. /Nabeel-s-Portfolio/ar/admin). */
+export function localizedPath(locale: Locale, path: string): string {
+  return publicAsset(withLocale(locale, path));
+}
+
+/** Client navigation that works with static export + basePath. */
+export function navigateLocalized(locale: Locale, path: string) {
+  const target = localizedPath(locale, path);
+  if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") {
+    window.location.assign(target);
+    return;
+  }
+  window.location.assign(target);
 }
 
 export function withLocale(locale: Locale, path: string): string {

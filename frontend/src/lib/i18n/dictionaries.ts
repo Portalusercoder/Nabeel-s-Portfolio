@@ -160,6 +160,10 @@ export type Dictionary = {
     readTimeLabel: string;
     publishToStrapi: string;
     publishToStrapiHint: string;
+    loginUserHint: string;
+    loginWrongUser: string;
+    loginUnreachable: string;
+    loginMisconfigured: string;
   };
 };
 
@@ -377,6 +381,13 @@ const ar: Dictionary = {
     readTimeLabel: "وقت القراءة (دقائق)",
     publishToStrapi: "نشر إلى Strapi",
     publishToStrapiHint: "سيُنشأ مقال جديد في Strapi بنفس المحتوى.",
+    loginUserHint:
+      "استخدم مستخدم Strapi من نوع Authenticated (وليس حساب لوحة Strapi الرئيسية). أنشئه من: Users & Permissions → Users.",
+    loginWrongUser: "بيانات الدخول غير صحيحة. تأكد أن الدور Authenticated ومفعّل Confirmed.",
+    loginUnreachable:
+      "تعذّر الاتصال بـ Strapi. انتظر دقيقة إذا كان الخادم على Render (وضع مجاني) ثم أعد المحاولة.",
+    loginMisconfigured:
+      "الموقع لا يتصل بـ Strapi على Render. أضف NEXT_PUBLIC_STRAPI_URL في GitHub → Settings → Secrets ثم أعد نشر الموقع.",
   },
 };
 
@@ -594,6 +605,13 @@ const en: Dictionary = {
     readTimeLabel: "Read time (min)",
     publishToStrapi: "Publish to Strapi",
     publishToStrapiHint: "This will create a new post in Strapi with the same content.",
+    loginUserHint:
+      "Use a Strapi user with the Authenticated role (not your main Strapi admin login). Create one under Users & Permissions → Users.",
+    loginWrongUser: "Invalid login. Use an Authenticated user with Confirmed enabled.",
+    loginUnreachable:
+      "Cannot reach Strapi. On Render free tier, wait ~1 minute for the server to wake up, then try again.",
+    loginMisconfigured:
+      "This site is not linked to Render Strapi. Add NEXT_PUBLIC_STRAPI_URL in GitHub → Settings → Secrets, then redeploy.",
   },
 };
 

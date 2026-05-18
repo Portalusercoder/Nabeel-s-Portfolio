@@ -1,10 +1,21 @@
 import { publicAsset } from "./assets";
 
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+export function getConfiguredStrapiUrl() {
+  const url = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+  return url.replace(/\/$/, "");
+}
 
 export function getStrapiURL(path = "") {
-  return `${STRAPI_URL}${path}`;
+  return `${getConfiguredStrapiUrl()}${path}`;
+}
+
+export function isStrapiMisconfiguredOnLiveSite() {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  const onGithubPages = host === "github.io" || host.endsWith(".github.io");
+  if (!onGithubPages) return false;
+  const strapi = getConfiguredStrapiUrl();
+  return strapi.includes("localhost") || strapi.includes("127.0.0.1");
 }
 
 export function getStrapiMedia(url: string | null | undefined) {
@@ -229,13 +240,27 @@ export async function subscribeNewsletter(data: {
   });
 }
 
+export type StrapiLoginError = "INVALID_CREDENTIALS" | "UNREACHABLE" | "AUTH_FAILED";
+
 export async function strapiLogin(identifier: string, password: string) {
-  const res = await fetch(getStrapiURL("/api/auth/local"), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ identifier, password }),
-  });
-  if (!res.ok) throw new Error("Invalid credentials");
+  let res: Response;
+  try {
+    res = await fetch(getStrapiURL("/api/auth/local"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier, password }),
+    });
+  } catch {
+    throw new Error("UNREACHABLE" satisfies StrapiLoginError);
+  }
+
+  if (!res.ok) {
+    if (res.status === 400 || res.status === 401 || res.status === 403) {
+      throw new Error("INVALID_CREDENTIALS" satisfies StrapiLoginError);
+    }
+    throw new Error("AUTH_FAILED" satisfies StrapiLoginError);
+  }
+
   return res.json() as Promise<{ jwt: string; user: { id: number; email: string } }>;
 }
 
