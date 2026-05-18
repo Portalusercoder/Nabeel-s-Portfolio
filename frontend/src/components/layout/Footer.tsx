@@ -15,7 +15,7 @@ export function Footer() {
           <a href={`mailto:${SITE_EMAIL}`} className="hover:text-foreground">
             {SITE_EMAIL}
           </a>
-          <LocaleLink href="/resources" className="hover:text-foreground">
+          <LocaleLink href="/blog" className="hover:text-foreground">
             {dict.footer.newsletter}
           </LocaleLink>
           <LocaleLink href="/resources#contact" className="hover:text-foreground">

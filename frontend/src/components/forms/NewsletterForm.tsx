@@ -63,14 +63,14 @@ export function NewsletterForm({
         <button
           type="submit"
           disabled={status === "loading"}
-          className="inline-flex h-12 shrink-0 items-center justify-center rounded-2xl bg-cta-blue px-6 text-sm font-medium text-white transition hover:bg-cta-blue/90"
+          className="inline-flex h-12 shrink-0 items-center justify-center rounded-2xl bg-white px-6 text-sm font-medium text-black transition hover:bg-white/90"
         >
           {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : dict.newsletter.subscribe}
         </button>
       </div>
-      {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
-      {status === "success" && <p className="text-xs text-emerald-400">{message}</p>}
-      {status === "error" && <p className="text-xs text-red-400">{message}</p>}
+      {errors.email && <p className="text-xs text-muted">{errors.email.message}</p>}
+      {status === "success" && <p className="text-xs text-foreground">{message}</p>}
+      {status === "error" && <p className="text-xs text-muted">{message}</p>}
     </form>
   );
 }

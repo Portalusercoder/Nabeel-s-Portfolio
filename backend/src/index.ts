@@ -1,3 +1,5 @@
+import { migrateBlogPostLanguages, seedBlogPosts } from "./utils/seed-blog-posts";
+
 export default {
   register() {},
 
@@ -40,6 +42,7 @@ export default {
       "api::blog-post.blog-post.create",
       "api::blog-post.blog-post.update",
       "api::blog-post.blog-post.delete",
+      "api::blog-post.blog-post.syncFromSite",
       "api::newsletter-subscriber.newsletter-subscriber.find",
       "api::newsletter-subscriber.newsletter-subscriber.findOne",
       "api::resource.resource.find",
@@ -59,6 +62,19 @@ export default {
           data: { action, role: authenticatedRole.id },
         });
       }
+    }
+
+    try {
+      const migrated = await migrateBlogPostLanguages(strapi);
+      if (migrated > 0) {
+        strapi.log.info(`Set language on ${migrated} blog post(s)`);
+      }
+      const result = await seedBlogPosts(strapi);
+      if (result.created > 0) {
+        strapi.log.info(`Seeded ${result.created} blog post(s) from site content`);
+      }
+    } catch (err) {
+      strapi.log.warn(`Blog seed skipped: ${err}`);
     }
   },
 };

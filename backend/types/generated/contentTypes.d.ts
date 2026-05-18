@@ -382,11 +382,8 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
   };
   attributes: {
     author: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'Meridian Team'>;
-    category: Schema.Attribute.Enumeration<
-      ['Strategy', 'Design', 'Development', 'Marketing', 'Insights']
-    > &
-      Schema.Attribute.DefaultTo<'Insights'>;
+      Schema.Attribute.DefaultTo<'\u0646\u0628\u064A\u0644 \u0627\u0644\u062C\u0627\u0628\u0631\u064A'>;
+    category: Schema.Attribute.String;
     content: Schema.Attribute.RichText & Schema.Attribute.Required;
     coverImage: Schema.Attribute.Media<'images'>;
     createdAt: Schema.Attribute.DateTime;
@@ -396,6 +393,9 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 300;
       }>;
+    language: Schema.Attribute.Enumeration<['ar', 'en']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'ar'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

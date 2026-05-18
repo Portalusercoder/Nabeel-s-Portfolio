@@ -1,7 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { getBlogPosts } from "@/lib/strapi";
-import { getMockBlogPosts } from "@/lib/mock-data";
+import { getDisplayBlogPosts } from "@/lib/blog-posts";
+import { getStrapiURL } from "@/lib/strapi";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { isValidLocale } from "@/lib/i18n/routing";
 import type { Locale } from "@/lib/i18n/types";
@@ -10,8 +11,7 @@ import { withLocale } from "@/lib/i18n/routing";
 export async function ArticlesPreviewSection({ locale: raw }: { locale: string }) {
   const locale: Locale = isValidLocale(raw) ? raw : "ar";
   const dict = getDictionary(locale);
-  const posts = await getBlogPosts();
-  const display = (posts.length > 0 ? posts : getMockBlogPosts(locale)).slice(0, 8);
+  const display = (await getDisplayBlogPosts(locale)).slice(0, 8);
   const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
 
   return (
@@ -26,20 +26,40 @@ export async function ArticlesPreviewSection({ locale: raw }: { locale: string }
         </Link>
         <div className="card-surface rounded-3xl p-6 lg:p-8">
           <div className="grid gap-6 sm:grid-cols-2">
-            {display.map((post) => (
-              <Link
-                key={post.slug}
-                href={withLocale(locale, `/blog/${post.slug}`)}
-                className="group flex items-center gap-4 rounded-2xl p-2 transition hover:bg-card-hover"
-              >
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-accent-muted text-lg font-semibold text-pill-text">
-                  {post.title.charAt(0)}
-                </div>
-                <p className="text-sm font-medium leading-snug group-hover:text-pill-text">
-                  {post.title}
-                </p>
-              </Link>
-            ))}
+            {display.map((post) => {
+              const coverUrl = post.coverImage?.url;
+              const strapiOrigin = getStrapiURL();
+              const isStrapiMedia = Boolean(
+                coverUrl?.startsWith(strapiOrigin) || coverUrl?.startsWith("/uploads/")
+              );
+              return (
+                <Link
+                  key={post.slug}
+                  href={withLocale(locale, `/blog/${post.slug}`)}
+                  className="group flex items-center gap-4 rounded-2xl p-2 transition hover:bg-card-hover"
+                >
+                  <p className="min-w-0 flex-1 text-sm font-medium leading-snug text-start line-clamp-3 group-hover:text-foreground">
+                    {post.title}
+                  </p>
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-accent-muted">
+                    {coverUrl ? (
+                      <Image
+                        src={coverUrl}
+                        alt={post.coverImage?.alternativeText || post.title}
+                        fill
+                        unoptimized={isStrapiMedia}
+                        className="object-cover"
+                        sizes="56px"
+                      />
+                    ) : (
+                      <span className="flex h-full items-center justify-center text-lg font-semibold text-muted">
+                        {post.title.charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
         <div className="mt-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">

@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X, Loader2 } from "lucide-react";
 import { createBlogPost, updateBlogPost, type BlogPost } from "@/lib/strapi";
 import { useLocale } from "@/lib/i18n/locale-provider";
+import type { Locale } from "@/lib/i18n/types";
 
 type FormData = {
   title: string;
@@ -22,12 +23,14 @@ export function BlogPostModal({
   open,
   onClose,
   token,
+  locale,
   post,
   onSaved,
 }: {
   open: boolean;
   onClose: () => void;
   token: string;
+  locale: Locale;
   post: BlogPost | null;
   onSaved: () => void;
 }) {
@@ -62,7 +65,7 @@ export function BlogPostModal({
         excerpt: post?.excerpt || "",
         content: post?.content?.replace(/<[^>]+>/g, "") || post?.content || "",
         author: post?.author || dict.site.name,
-        category: post?.category || "Insights",
+        category: post?.category || "",
         readTime: post?.readTime || 5,
       });
     }
@@ -73,12 +76,13 @@ export function BlogPostModal({
   const onSubmit = async (data: FormData) => {
     const payload = {
       ...data,
+      language: locale,
       content: `<p>${data.content.replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br/>")}</p>`,
     };
     if (post?.documentId) {
       await updateBlogPost(token, post.documentId, payload);
     } else {
-      await createBlogPost(token, payload as { title: string; content: string });
+      await createBlogPost(token, { ...payload, language: locale });
     }
     onSaved();
     onClose();
@@ -92,17 +96,20 @@ export function BlogPostModal({
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border bg-card p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">
-            {post ? dict.admin.editPost : dict.admin.newPost}
+            {post?.documentId ? dict.admin.editPost : post ? dict.admin.publishToStrapi : dict.admin.newPost}
           </h2>
           <button type="button" onClick={onClose} className="text-muted hover:text-foreground">
             <X className="h-5 w-5" />
           </button>
         </div>
+        {!post?.documentId && post && (
+          <p className="mb-4 text-xs text-muted">{dict.admin.publishToStrapiHint}</p>
+        )}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="text-xs text-muted">{dict.admin.titleLabel}</label>
             <input {...register("title")} className={inputClass} />
-            {errors.title && <p className="text-xs text-red-400">{errors.title.message}</p>}
+            {errors.title && <p className="text-xs text-muted">{errors.title.message}</p>}
           </div>
           <div>
             <label className="text-xs text-muted">{dict.admin.slugLabel}</label>
@@ -115,7 +122,22 @@ export function BlogPostModal({
           <div>
             <label className="text-xs text-muted">{dict.admin.contentLabel}</label>
             <textarea {...register("content")} rows={8} className={inputClass} />
-            {errors.content && <p className="text-xs text-red-400">{errors.content.message}</p>}
+            {errors.content && <p className="text-xs text-muted">{errors.content.message}</p>}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-muted">{dict.admin.category}</label>
+              <input {...register("category")} className={inputClass} />
+            </div>
+            <div>
+              <label className="text-xs text-muted">{dict.admin.readTimeLabel}</label>
+              <input
+                type="number"
+                min={1}
+                {...register("readTime", { valueAsNumber: true })}
+                className={inputClass}
+              />
+            </div>
           </div>
           <button
             type="submit"

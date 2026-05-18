@@ -2,9 +2,10 @@
 
 import { LocaleLink } from "@/components/layout/LocaleLink";
 import { useLocale } from "@/lib/i18n/locale-provider";
+import { cn } from "@/lib/utils";
 
 export function HeroSection() {
-  const { dict } = useLocale();
+  const { dict, isRtl } = useLocale();
 
   return (
     <section className="px-5 pb-16 pt-10 lg:px-8 lg:pb-24 lg:pt-14">
@@ -23,9 +24,13 @@ export function HeroSection() {
               className="group relative card-surface p-5 transition hover:bg-card-hover"
             >
               {card.badge === "online" && (
-                <span className="absolute start-4 top-4 flex items-center gap-1.5 text-xs text-muted">
-                  <span className="h-2 w-2 rounded-full bg-online shadow-[0_0_8px_var(--online)]" />
-                </span>
+                <span
+                  className={cn(
+                    "absolute top-4 h-2 w-2 rounded-full bg-online shadow-[0_0_10px_var(--online)]",
+                    isRtl ? "left-4" : "right-4"
+                  )}
+                  aria-hidden
+                />
               )}
               <p className="text-base font-medium text-foreground">{card.title}</p>
               <p className="mt-2 text-sm text-muted">{card.subtitle}</p>

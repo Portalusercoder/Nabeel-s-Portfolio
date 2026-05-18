@@ -27,11 +27,11 @@ export function WorksSection() {
               <div className="flex min-h-[280px] flex-col justify-between rounded-[1.35rem] bg-black/20 p-6 backdrop-blur-sm lg:min-h-[340px]">
                 <div>
                   <p className="text-2xl text-white/95 lg:text-3xl">{work.label}</p>
-                  <p className="mt-1 text-sm text-white/60">{work.sub}</p>
+                  <p className="mt-1 text-sm text-muted">{work.sub}</p>
                 </div>
                 <div className="mt-auto flex items-end justify-between gap-4 pt-8">
-                  <span className="text-sm text-white/80">{work.title}</span>
-                  <span className="rounded-full bg-black/30 px-3 py-1 text-xs text-white/70">
+                  <span className="text-sm text-foreground/90">{work.title}</span>
+                  <span className="rounded-full border border-border bg-card px-3 py-1 text-xs text-muted">
                     {work.tag}
                   </span>
                 </div>

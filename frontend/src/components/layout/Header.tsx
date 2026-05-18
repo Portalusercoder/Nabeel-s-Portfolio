@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, MoreHorizontal } from "lucide-react";
@@ -7,7 +8,14 @@ import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { LocaleLink } from "@/components/layout/LocaleLink";
 import { Button } from "@/components/ui/Button";
 import { useLocale } from "@/lib/i18n/locale-provider";
+import { getLocaleFromPathname } from "@/lib/i18n/routing";
 import { cn } from "@/lib/utils";
+
+function isNavActive(pathname: string, href: string) {
+  const path = pathname.replace(new RegExp(`^/${getLocaleFromPathname(pathname)}`), "") || "/";
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(`${href}/`);
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -18,10 +26,9 @@ export function Header() {
   if (isAdmin) return null;
 
   const navLinks = [
-    { href: "/resources", label: dict.nav.products },
-    { href: "/#services", label: dict.nav.services },
-    { href: "/#works", label: dict.nav.works },
+    { href: "/", label: dict.nav.services },
     { href: "/blog", label: dict.nav.articles },
+    { href: "/resources", label: dict.nav.products },
   ];
 
   return (
@@ -42,9 +49,7 @@ export function Header() {
               href={link.href}
               className={cn(
                 "text-sm transition-colors",
-                pathname.endsWith(link.href.replace("/", "")) || pathname.includes(link.href)
-                  ? "text-foreground"
-                  : "text-muted hover:text-foreground"
+                isNavActive(pathname, link.href) ? "text-foreground" : "text-muted hover:text-foreground"
               )}
             >
               {link.label}
@@ -57,11 +62,14 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher className="sm:hidden" />
-          <LocaleLink
-            href="/"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-pill-text"
-          >
-            {dict.site.name.charAt(0)}
+          <LocaleLink href="/" className="relative block h-9 w-[120px] shrink-0 sm:h-10 sm:w-[140px]">
+            <Image
+              src="/images/logo.png"
+              alt="Nabil Al-Jabri — نبيل الجابري"
+              fill
+              className="object-contain object-start"
+              priority
+            />
           </LocaleLink>
         </div>
 

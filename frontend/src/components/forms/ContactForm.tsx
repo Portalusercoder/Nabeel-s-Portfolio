@@ -41,7 +41,7 @@ export function ContactForm() {
   };
 
   const inputClass =
-    "w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-pill-text/50 focus:ring-2 focus:ring-white/10";
+    "w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-foreground/30 focus:ring-2 focus:ring-white/10";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -49,7 +49,7 @@ export function ContactForm() {
         <div>
           <label className="mb-1.5 block text-xs text-muted">{dict.contact.name}</label>
           <input {...register("name")} className={inputClass} placeholder={dict.contact.namePlaceholder} />
-          {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name.message}</p>}
+          {errors.name && <p className="mt-1 text-xs text-muted">{errors.name.message}</p>}
         </div>
         <div>
           <label className="mb-1.5 block text-xs text-muted">{dict.contact.email}</label>
@@ -60,7 +60,7 @@ export function ContactForm() {
             className={inputClass}
             placeholder={dict.contact.emailPlaceholder}
           />
-          {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email.message}</p>}
+          {errors.email && <p className="mt-1 text-xs text-muted">{errors.email.message}</p>}
         </div>
       </div>
       <div>
@@ -75,7 +75,7 @@ export function ContactForm() {
           className={cn(inputClass, "resize-none")}
           placeholder={dict.contact.messagePlaceholder}
         />
-        {errors.message && <p className="mt-1 text-xs text-red-400">{errors.message.message}</p>}
+        {errors.message && <p className="mt-1 text-xs text-muted">{errors.message.message}</p>}
       </div>
       <button
         type="submit"
@@ -84,8 +84,8 @@ export function ContactForm() {
       >
         {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : dict.contact.send}
       </button>
-      {status === "success" && <p className="text-sm text-emerald-400">{dict.contact.success}</p>}
-      {status === "error" && <p className="text-sm text-red-400">{dict.contact.error}</p>}
+      {status === "success" && <p className="text-sm text-foreground">{dict.contact.success}</p>}
+      {status === "error" && <p className="text-sm text-muted">{dict.contact.error}</p>}
     </form>
   );
 }

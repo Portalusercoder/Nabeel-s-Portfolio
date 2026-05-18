@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
               required
             />
           </div>
-          {error && <p className="text-xs text-red-400">{error}</p>}
+          {error && <p className="text-xs text-muted">{error}</p>}
           <button
             type="submit"
             disabled={loading}
@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
             href={process.env.NEXT_PUBLIC_STRAPI_URL + "/admin"}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-pill-text underline"
+            className="text-foreground underline"
           >
             {dict.admin.strapiAdmin}
           </a>

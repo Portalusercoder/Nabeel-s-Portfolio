@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft, ArrowRight, Download, FileText } from "lucide-react";
-import { NewsletterForm } from "@/components/forms/NewsletterForm";
-import { ContactForm } from "@/components/forms/ContactForm";
-import { getResources } from "@/lib/strapi";
-import { getMockResources } from "@/lib/mock-data";
+import Image from "next/image";
 import { getTranslations } from "@/lib/i18n/server";
-import { type Locale } from "@/lib/i18n/types";
-import { withLocale } from "@/lib/i18n/routing";
+import { Button } from "@/components/ui/Button";
+import { CampaignHighlights } from "@/components/resources/CampaignHighlights";
+import { GuideLeadForm } from "@/components/forms/GuideLeadForm";
+import { ContactForm } from "@/components/forms/ContactForm";
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -19,52 +16,72 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ResourcesPage({ params }: PageProps) {
   const { locale: raw } = await params;
-  const { locale, dict } = await getTranslations(raw);
-  const validLocale = locale as Locale;
-  const resources = await getResources();
-  const display = resources.length > 0 ? resources : getMockResources(validLocale);
-  const Arrow = validLocale === "ar" ? ArrowLeft : ArrowRight;
+  const { dict } = await getTranslations(raw);
 
   return (
-    <div className="px-5 py-16 lg:px-8 lg:py-24">
+    <div className="px-5 pb-20 pt-10 lg:px-8 lg:pb-28 lg:pt-14">
       <div className="mx-auto max-w-6xl">
-        <Link
-          href={withLocale(validLocale, "/")}
-          className="mb-8 inline-flex items-center gap-2 text-sm text-muted hover:text-foreground"
-        >
-          <Arrow className="h-4 w-4" />
-          {dict.resources.backHome}
-        </Link>
-        <h1 className="text-3xl font-semibold lg:text-4xl">{dict.resources.title}</h1>
-        <p className="mt-3 max-w-xl text-muted">{dict.resources.description}</p>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {display.map((resource) => (
-            <article key={resource.id} className="card-surface flex flex-col p-6">
-              <FileText className="h-5 w-5 text-muted" strokeWidth={1.5} />
-              <span className="mt-4 text-xs text-muted">{resource.category}</span>
-              <h2 className="mt-2 font-medium">{resource.title}</h2>
-              {resource.description && (
-                <p className="mt-2 flex-1 text-sm text-muted">{resource.description}</p>
-              )}
-              <button type="button" className="mt-6 inline-flex items-center gap-2 text-sm text-pill-text">
-                <Download className="h-4 w-4" />
-                {resource.file?.url ? dict.resources.download : dict.resources.requestDownload}
-              </button>
+        <header className="max-w-3xl">
+          <div className="mb-6 inline-flex overflow-hidden rounded-full border border-border text-xs font-medium">
+            <span className="bg-pill-text px-4 py-2 text-black">{dict.resources.badgeYear}</span>
+            <span className="bg-card px-4 py-2 text-muted">{dict.resources.badgeLabel}</span>
+          </div>
+          <h1 className="text-3xl font-semibold leading-[1.35] tracking-tight sm:text-4xl lg:text-[2.75rem]">
+            {dict.resources.heroTitle}
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted lg:text-lg">
+            {dict.resources.heroSubtitle}
+          </p>
+          <div className="mt-8">
+            <Button href="#getfile" size="lg">
+              {dict.resources.getFileCta}
+            </Button>
+          </div>
+        </header>
+
+        <div className="mt-14 lg:mt-16">
+          <div className="card-surface overflow-hidden p-4 sm:p-6">
+            <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+              <Image
+                src="/images/campaign-guide-preview.png"
+                alt={dict.resources.badgeLabel}
+                fill
+                className="object-contain"
+                sizes="(max-width: 1024px) 100vw, 1024px"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {dict.resources.previewTopics.map((topic) => (
+            <article key={topic.title} className="card-surface flex flex-col p-5">
+              <h2 className="text-sm font-medium leading-snug text-foreground">{topic.title}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted">{topic.excerpt}</p>
             </article>
           ))}
         </div>
-        <section className="mt-20 border-t border-border pt-16">
-          <h2 className="text-xl font-semibold">{dict.resources.newsletterTitle}</h2>
-          <p className="mt-2 text-muted">{dict.resources.newsletterDesc}</p>
-          <div className="mt-6 max-w-md">
-            <NewsletterForm source="resources" />
+
+        <div className="mt-14 lg:mt-16">
+          <CampaignHighlights />
+        </div>
+
+        <section id="getfile" className="scroll-mt-24 mt-16 border-t border-border pt-16 lg:mt-20">
+          <div className="mx-auto max-w-2xl">
+            <GuideLeadForm />
           </div>
         </section>
-        <section id="contact" className="mt-20 scroll-mt-24 border-t border-border pt-16">
-          <h2 className="text-xl font-semibold">{dict.resources.contactTitle}</h2>
-          <p className="mt-2 text-muted">{dict.resources.contactDesc}</p>
-          <div className="mt-8 max-w-lg">
-            <ContactForm />
+
+        <section id="contact" className="scroll-mt-24 mt-16 border-t border-border pt-16 lg:mt-20">
+          <div className="card-surface rounded-3xl p-8 lg:p-10">
+            <h2 className="text-xl font-semibold sm:text-2xl">{dict.footer.bookConsultation}</h2>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted lg:text-base">
+              {dict.resources.description}
+            </p>
+            <div className="mt-8">
+              <ContactForm />
+            </div>
           </div>
         </section>
       </div>

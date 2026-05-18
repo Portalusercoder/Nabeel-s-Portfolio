@@ -75,6 +75,9 @@ export type Dictionary = {
   blog: {
     title: string;
     description: string;
+    badgeLabel: string;
+    badgeYear: string;
+    loadMore: string;
     backHome: string;
     backToBlog: string;
     read: string;
@@ -85,13 +88,21 @@ export type Dictionary = {
   resources: {
     title: string;
     description: string;
-    backHome: string;
-    download: string;
-    requestDownload: string;
-    newsletterTitle: string;
-    newsletterDesc: string;
-    contactTitle: string;
-    contactDesc: string;
+    badgeYear: string;
+    badgeLabel: string;
+    heroTitle: string;
+    heroSubtitle: string;
+    getFileCta: string;
+    previewTopics: { title: string; excerpt: string }[];
+    highlights: string[];
+    formHeading: string;
+    firstNamePlaceholder: string;
+    emailPlaceholder: string;
+    downloadCta: string;
+    formSuccess: string;
+    formError: string;
+    firstNameRequired: string;
+    emailInvalid: string;
   };
   lang: {
     switchTo: string;
@@ -136,90 +147,102 @@ export type Dictionary = {
     blogPostsStat: string;
     newsletterStat: string;
     strapiBackend: string;
+    strapiConnected: string;
+    strapiOffline: string;
+    strapiOfflineShort: string;
+    syncFromSite: string;
+    syncing: string;
+    syncFailed: string;
+    localOnly: string;
+    inStrapi: string;
+    statusCol: string;
+    localOnlyHint: string;
+    readTimeLabel: string;
+    publishToStrapi: string;
+    publishToStrapiHint: string;
   };
 };
 
 const ar: Dictionary = {
   site: {
     name: "نبيل",
-    fullName: "نبيل — استشاري وريادي أعمال",
-    tagline:
-      "أساعد المؤسسين والخبراء على بناء مشاريع استشارية مربحة وبيع الخبرة بدل الخدمة.",
-    location: "دبي / عن بُعد",
-    metaTitle: "استشاري وريادي أعمال",
+    fullName: "نحو تحويل الأفكار إلى قصص نجاح رقمية",
+    tagline: "نساعدك على تحقيق رؤيتك في عالم التسويق والتجارة الإلكترونية",
+    location: "نبيل الجابري — أخصائي تسويق وتجارة إلكترونية ومؤثر",
+    metaTitle: "خبير تسويق وتجارة إلكترونية",
   },
   nav: {
-    products: "المنتجات",
-    services: "الخدمات",
-    works: "الأعمال",
-    articles: "المقالات",
-    startConsultation: "ابدأ باستشارة",
+    products: "كتيب تجهيز الحملات",
+    services: "الرئيسية",
+    works: "الخبرات",
+    articles: "المدونة",
+    startConsultation: "تواصل معي",
     more: "المزيد",
     menu: "القائمة",
   },
   footer: {
-    newsletter: "نشرة",
-    bookConsultation: "احجز استشارة",
+    newsletter: "المدونة",
+    bookConsultation: "تواصل معي",
     admin: "لوحة التحكم",
   },
   hero: {
     cards: [
-      { title: "ابدأ معي", subtitle: "احجز استشارة", href: "resources#contact", badge: "online" },
-      { title: "مقالات", subtitle: "+١٥٠ مقال في بيع الخبرة", href: "blog" },
-      { title: "اعمل معي", subtitle: "خدماتي وباقاتي", href: "#services" },
+      { title: "تواصل معي", subtitle: "احجز استشارة", href: "resources#contact", badge: "online" },
+      { title: "المدونة", subtitle: "مقالات في التسويق والتجارة الإلكترونية", href: "blog" },
+      { title: "كتيب الحملات", subtitle: "تجهيز حملاتك التسويقية", href: "resources" },
     ],
   },
   works: {
-    title: "أحدث أعمالي",
+    title: "الخبرات واللقاءات",
     items: [
       {
-        title: "أكاديمية حضور",
-        tag: "منصة تدريبية",
-        label: "سهام الحضور",
-        sub: "web design + branding",
-        gradient: "from-[#c4a88a] to-[#8b7355]",
+        title: "وكالة رادار",
+        tag: "تسويق ونمو",
+        label: "المدير التنفيذي",
+        sub: "2022 — الآن",
+        gradient: "from-[#3a3a3a] to-[#0a0a0a]",
       },
       {
-        title: "مشروع داخلي",
-        tag: "هوية بصرية",
-        label: "تصميم داخلي",
-        sub: "branding + web",
-        gradient: "from-[#3d3530] to-[#1a1614]",
+        title: "لقاء تلفزيوني",
+        tag: "صباح السعودية",
+        label: "القناة الأولى",
+        sub: "لقاءات تلفزيونية",
+        gradient: "from-[#2a2a2a] to-[#0a0a0a]",
       },
     ],
   },
   stats: {
     paragraph1:
-      "خلال ٧ سنوات ساعدت +٨٠ مؤسس على بناء مشاريع استشارية. عملائي حققوا عوائد تصل إلى ٤٠٠٪ من خلال استراتيجية تمركز ومنتجات رقمية تُباع بدل ساعات الاستشارة.",
+      "ما كنت أبحث عن \"طريقة أبيع أكثر\"، كنت أبحث عن وش اللي يخلي المشاريع تنجح فعلاً. ومن هنا بدأت رحلتي في التجارة الإلكترونية والتسويق الرقمي. خلال السنوات، اشتغلت مع عشرات العلامات التجارية في السعودية والخليج، وشفت عن قرب وش يفرق بين إعلان يصرف... وإستراتيجية تبني نمو حقيقي.",
     paragraph2:
-      "أقدّم خدمات في بناء العلامة، تصميم المواقع، وأنظمة المحتوى — مع فريق يضمن جودة تنفيذ عالية.",
-    clients: ["McKinsey", "RASF", "wfrah", "MECA", "Hudoor", "Nashra"],
+      "أسست رادار لتكون شريك نمو، مو مجرد وكالة. نقيس كل شيء، نحلل الأرقام، ونحوّل البيانات إلى قرارات تخلي النتائج تتكلم. هدفي اليوم: أساعدك تشوف الصورة كاملة، وتبني منظومة نمو ترفع أداءك وتضاعف مبيعاتك.",
+    clients: ["Lafemzin", "منشآت", "زد", "ماي الورد", "مركز دلني", "سلة"],
   },
   products: {
-    title: "أحدث المنتجات",
+    title: "الموارد والخدمات",
     items: [
-      { title: "كتب رقمية تفاعلية", price: "٣٥$" },
-      { title: "دورة مسجّلة", price: "١٩٩$" },
-      { title: "ورشة مسجّلة", price: "٩٩$" },
+      { title: "كتيب تجهيز الحملات", price: "مجاني" },
+      { title: "ملف الأعمال", price: "PDF" },
+      { title: "استشارة", price: "احجز" },
     ],
   },
   articles: {
     title: "آخر المقالات",
     categories: [
-      "بناء المشروع والمنتجات",
-      "الاستراتيجية والتمركز",
-      "النمو والتسويق",
-      "العملاء والمبيعات",
-      "الإنتاجية والعادات",
-      "العقلية والتحفيز",
+      "التجارة الإلكترونية",
+      "التسويق الرقمي",
+      "التسعير والمبيعات",
+      "سلوك المستهلك",
+      "النمو",
+      "ريادة الأعمال",
     ],
   },
   servicesCta: {
-    title: "تبحث عن خدماتي؟",
+    title: "نبيل الجابري — خبير في التسويق والتجارة الإلكترونية",
     description:
-      "أعمل مع المؤسسين والخبراء على بناء مشاريع استشارية، منتجات رقمية، ومواقع احترافية تبيع الخبرة بدل الوقت—مع فريق تنفيذ متخصص.",
-    packages: "الخدمات والباقات",
-    contact: "تواصل معي",
+      "يشارك رواد الأعمال حول النمو الرقمي، وبناء العلامات التجارية، ومستقبل الأعمال عبر الإنترنت.",
+    packages: "ملف الأعمال لنبيل",
+    contact: "احجز استشارة",
   },
   newsletter: {
     title: "أحدث مقالاتي مباشرة في بريدك الإلكتروني",
@@ -243,28 +266,60 @@ const ar: Dictionary = {
     namePlaceholder: "اسمك",
     emailPlaceholder: "you@email.com",
     companyPlaceholder: "اختياري",
-    messagePlaceholder: "ما الذي تريد بناءه؟",
+    messagePlaceholder: "كيف يمكنني مساعدتك؟",
   },
   blog: {
-    title: "المقالات",
-    description: "رؤى عملية في بيع الخبرة وبناء المشاريع الاستشارية.",
+    title: "من السوق لك",
+    description:
+      "مقالات وتحليلات متعمقة في مجالات التسويق والتجارة الإلكترونية والابتكار الرقمي لصناعة أفكار تقود النمو.",
+    badgeLabel: "المدونة",
+    badgeYear: "2025",
+    loadMore: "تحميل المزيد",
     backHome: "الرئيسية",
-    backToBlog: "العودة للمقالات",
+    backToBlog: "العودة للمدونة",
     read: "اقرأ",
     minRead: "دقائق",
     byAuthor: "بقلم",
     notFound: "المقال غير موجود",
   },
   resources: {
-    title: "المنتجات والموارد",
-    description: "أدلة وقوالب مجانية—بالإضافة إلى منتجات رقمية مدفوعة قريباً.",
-    backHome: "الرئيسية",
-    download: "تحميل",
-    requestDownload: "طلب التحميل",
-    newsletterTitle: "النشرة البريدية",
-    newsletterDesc: "أحدث المقالات مباشرة في بريدك.",
-    contactTitle: "تواصل معي",
-    contactDesc: "أخبرني عن مشروعك—أرد خلال يوم عمل.",
+    title: "كتيب تجهيز الحملات",
+    description:
+      "راجع 9 عناصر أساسية قبل إطلاق حملتك التسويقية—دليل مجاني من نبيل الجابري.",
+    badgeYear: "2025",
+    badgeLabel: "كتيب تجهيز الحملات",
+    heroTitle: "هل حملتك فعلاً جاهزة؟",
+    heroSubtitle: "راجع هالـ 9 عناصر قبل لا تبدأ وتصرف ريال واحد",
+    getFileCta: "أحصل على الملف",
+    previewTopics: [
+      {
+        title: "موقع البطيء يحرق الميزانية بدون ما تدري",
+        excerpt:
+          "موقع يأخذ 7 ثوانٍ على الجوال يعني ميزانية ضائعة. بعد التحسين لأقل من 3 ثوانٍ ارتفع التحويل 60%. قيس صفحتك عبر pagespeed.web.dev",
+      },
+      {
+        title: "الناس تكره المفاجآت... خصوصاً إذا كانت سلبية",
+        excerpt:
+          "إعلان يعد بخصم 30% والعميل لا يجده فور الدخول؟ يشعر بالخداع ويغادر. الوضوح قبل النقر يوفر الميزانية ويرفع الثقة.",
+      },
+      {
+        title: "جاهزة فعلاً؟",
+        excerpt: "قائمة تحقق عملية قبل الإطلاق—لتتأكد أن كل عنصر جاهز قبل أول ريال إعلان.",
+      },
+    ],
+    highlights: [
+      "زوايا جديدة للتفكير في التسويق والمبيعات",
+      "أمثلة واقعية من السوق المحلي والخليجي",
+      "تبسيط المفاهيم اللي الكل يعقدها",
+    ],
+    formHeading: "هل حملتك فعلاً جاهزة؟",
+    firstNamePlaceholder: "اسمك الأول",
+    emailPlaceholder: "الإيميل",
+    downloadCta: "حمل الدليل",
+    formSuccess: "تم الإرسال—تحقق من بريدك للحصول على الدليل.",
+    formError: "حدث خطأ. حاول مرة أخرى.",
+    firstNameRequired: "الاسم مطلوب",
+    emailInvalid: "بريد إلكتروني صحيح",
   },
   lang: {
     switchTo: "English",
@@ -309,90 +364,102 @@ const ar: Dictionary = {
     blogPostsStat: "المقالات",
     newsletterStat: "المشتركون",
     strapiBackend: "خادم Strapi",
+    strapiConnected: "متصل — المقالات متزامنة مع الموقع",
+    strapiOffline: "Strapi غير متصل. شغّل الخادم من مجلد backend ثم أعد تحميل الصفحة.",
+    strapiOfflineShort: "غير متصل",
+    syncFromSite: "مزامنة المقالات من الموقع",
+    syncing: "جاري المزامنة...",
+    syncFailed: "فشلت المزامنة. تأكد من تشغيل Strapi وصلاحيات الحساب.",
+    localOnly: "محلي فقط",
+    inStrapi: "في Strapi",
+    statusCol: "الحالة",
+    localOnlyHint: "{count} مقال/مقالات على الموقع غير موجودة في Strapi بعد.",
+    readTimeLabel: "وقت القراءة (دقائق)",
+    publishToStrapi: "نشر إلى Strapi",
+    publishToStrapiHint: "سيُنشأ مقال جديد في Strapi بنفس المحتوى.",
   },
 };
 
 const en: Dictionary = {
   site: {
     name: "Nabeel",
-    fullName: "Nabeel — Consultant & Entrepreneur",
-    tagline:
-      "I help founders and experts build profitable consulting businesses and sell expertise—not hours.",
-    location: "Dubai / Remote",
-    metaTitle: "Consultant & Entrepreneur",
+    fullName: "Turning ideas into digital success stories",
+    tagline: "We help you achieve your vision in marketing and e-commerce",
+    location: "Nabil Al-Jabri — Marketing & e-commerce specialist",
+    metaTitle: "Marketing & E-commerce Expert",
   },
   nav: {
-    products: "Products",
-    services: "Services",
-    works: "Work",
-    articles: "Articles",
-    startConsultation: "Book a call",
+    products: "Campaign guide",
+    services: "Home",
+    works: "Experience",
+    articles: "Blog",
+    startConsultation: "Contact me",
     more: "More",
     menu: "Menu",
   },
   footer: {
-    newsletter: "Newsletter",
-    bookConsultation: "Book a call",
+    newsletter: "Blog",
+    bookConsultation: "Contact me",
     admin: "Dashboard",
   },
   hero: {
     cards: [
-      { title: "Start here", subtitle: "Book a consultation", href: "resources#contact", badge: "online" },
-      { title: "Articles", subtitle: "150+ posts on selling expertise", href: "blog" },
-      { title: "Work with me", subtitle: "Services & packages", href: "#services" },
+      { title: "Contact me", subtitle: "Book a consultation", href: "resources#contact", badge: "online" },
+      { title: "Blog", subtitle: "Marketing & e-commerce articles", href: "blog" },
+      { title: "Campaign guide", subtitle: "Prepare your marketing campaigns", href: "resources" },
     ],
   },
   works: {
-    title: "Latest work",
+    title: "Experience & media",
     items: [
       {
-        title: "Hudoor Academy",
-        tag: "Training platform",
-        label: "Hudoor Presence",
-        sub: "web design + branding",
-        gradient: "from-[#c4a88a] to-[#8b7355]",
+        title: "Radar Agency",
+        tag: "Marketing & growth",
+        label: "CEO",
+        sub: "2022 — Present",
+        gradient: "from-[#3a3a3a] to-[#0a0a0a]",
       },
       {
-        title: "Internal project",
-        tag: "Visual identity",
-        label: "Interior design",
-        sub: "branding + web",
-        gradient: "from-[#3d3530] to-[#1a1614]",
+        title: "TV appearance",
+        tag: "Sabah Al-Saudia",
+        label: "Channel One",
+        sub: "Television interviews",
+        gradient: "from-[#2a2a2a] to-[#0a0a0a]",
       },
     ],
   },
   stats: {
     paragraph1:
-      "Over 7 years I've helped 80+ founders build consulting businesses. Clients have seen returns up to 400% through focused positioning and digital products that sell expertise—not billable hours.",
+      "I wasn't looking for a way to \"sell more\"—I was looking for what actually makes projects succeed. That's how my journey in e-commerce and digital marketing began. Over the years I've worked with dozens of brands across Saudi Arabia and the Gulf.",
     paragraph2:
-      "Services include brand building, web design, and content systems—with a team that delivers execution at a high standard.",
-    clients: ["McKinsey", "RASF", "wfrah", "MECA", "Hudoor", "Nashra"],
+      "I founded Radar to be a growth partner, not just an agency. We measure everything, analyze the numbers, and turn data into decisions. My goal today: help you see the full picture and build a growth system that multiplies sales.",
+    clients: ["Lafemzin", "Monsha'at", "Zid", "Mai Al Ward", "Dulani", "Salla"],
   },
   products: {
-    title: "Latest products",
+    title: "Resources & services",
     items: [
-      { title: "Interactive digital books", price: "$35" },
-      { title: "Recorded course", price: "$199" },
-      { title: "Recorded workshop", price: "$99" },
+      { title: "Campaign preparation guide", price: "Free" },
+      { title: "Portfolio", price: "PDF" },
+      { title: "Consultation", price: "Book" },
     ],
   },
   articles: {
     title: "Latest articles",
     categories: [
-      "Product building",
-      "Strategy & positioning",
-      "Growth & marketing",
-      "Clients & sales",
-      "Productivity & habits",
-      "Mindset & motivation",
+      "E-commerce",
+      "Digital marketing",
+      "Pricing & sales",
+      "Consumer behavior",
+      "Growth",
+      "Entrepreneurship",
     ],
   },
   servicesCta: {
-    title: "Looking for my services?",
+    title: "Nabil Al-Jabri — Marketing & e-commerce expert",
     description:
-      "I partner with founders and experts to build consulting businesses, digital products, and professional websites that sell expertise—not time—with a dedicated execution team.",
-    packages: "Services & packages",
-    contact: "Get in touch",
+      "Sharing insights on digital growth, brand building, and the future of online business.",
+    packages: "Nabil's portfolio",
+    contact: "Book a consultation",
   },
   newsletter: {
     title: "Get my latest articles in your inbox",
@@ -416,28 +483,60 @@ const en: Dictionary = {
     namePlaceholder: "Your name",
     emailPlaceholder: "you@email.com",
     companyPlaceholder: "Optional",
-    messagePlaceholder: "What are you looking to build?",
+    messagePlaceholder: "How can I help?",
   },
   blog: {
-    title: "Articles",
-    description: "Practical insights on selling expertise and building consulting businesses.",
+    title: "From the market to you",
+    description:
+      "In-depth articles and analysis on marketing, e-commerce, and digital innovation—ideas that drive growth.",
+    badgeLabel: "Blog",
+    badgeYear: "2025",
+    loadMore: "Load more",
     backHome: "Home",
-    backToBlog: "Back to articles",
+    backToBlog: "Back to blog",
     read: "Read",
     minRead: "min read",
     byAuthor: "By",
     notFound: "Article not found",
   },
   resources: {
-    title: "Products & resources",
-    description: "Free guides and templates—plus paid digital products coming soon.",
-    backHome: "Home",
-    download: "Download",
-    requestDownload: "Request download",
-    newsletterTitle: "Newsletter",
-    newsletterDesc: "Latest articles delivered to your inbox.",
-    contactTitle: "Get in touch",
-    contactDesc: "Tell me about your project—I reply within one business day.",
+    title: "Campaign preparation guide",
+    description:
+      "Review 9 essentials before launching your campaign—a free guide by Nabil Al-Jabri.",
+    badgeYear: "2025",
+    badgeLabel: "Campaign preparation guide",
+    heroTitle: "Is your campaign really ready?",
+    heroSubtitle: "Review these 9 checkpoints before you spend a single riyal",
+    getFileCta: "Get the guide",
+    previewTopics: [
+      {
+        title: "A slow site burns budget without you noticing",
+        excerpt:
+          "A 7-second mobile load means wasted ad spend. After optimizing to under 3 seconds, conversion rose 60%. Test at pagespeed.web.dev",
+      },
+      {
+        title: "People hate surprises—especially negative ones",
+        excerpt:
+          "Promising 30% off in the ad but hiding it on the landing page feels like deception. Clarity before the click saves budget and trust.",
+      },
+      {
+        title: "Really ready?",
+        excerpt: "A practical pre-launch checklist before your first ad riyal.",
+      },
+    ],
+    highlights: [
+      "Fresh angles on marketing and sales thinking",
+      "Real examples from local and GCC markets",
+      "Simplifying concepts everyone overcomplicates",
+    ],
+    formHeading: "Is your campaign really ready?",
+    firstNamePlaceholder: "First name",
+    emailPlaceholder: "Email",
+    downloadCta: "Download the guide",
+    formSuccess: "Done—check your email for the guide.",
+    formError: "Something went wrong. Try again.",
+    firstNameRequired: "Name is required",
+    emailInvalid: "Valid email required",
   },
   lang: {
     switchTo: "العربية",
@@ -482,6 +581,19 @@ const en: Dictionary = {
     blogPostsStat: "Blog posts",
     newsletterStat: "Newsletter signups",
     strapiBackend: "Strapi backend",
+    strapiConnected: "Connected — posts synced with the site",
+    strapiOffline: "Strapi is offline. Run the backend server, then reload this page.",
+    strapiOfflineShort: "Offline",
+    syncFromSite: "Sync posts from site",
+    syncing: "Syncing...",
+    syncFailed: "Sync failed. Ensure Strapi is running and your account has permissions.",
+    localOnly: "Local only",
+    inStrapi: "In Strapi",
+    statusCol: "Status",
+    localOnlyHint: "{count} post(s) on the site are not in Strapi yet.",
+    readTimeLabel: "Read time (min)",
+    publishToStrapi: "Publish to Strapi",
+    publishToStrapiHint: "This will create a new post in Strapi with the same content.",
   },
 };
 

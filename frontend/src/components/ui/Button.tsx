@@ -17,7 +17,7 @@ const variants = {
   secondary: "bg-card text-foreground border border-border hover:bg-card-hover",
   ghost: "text-muted hover:text-foreground hover:bg-card",
   outline: "border border-border bg-transparent text-foreground hover:bg-card",
-  blue: "bg-cta-blue text-white hover:bg-cta-blue/90",
+  blue: "bg-white text-black hover:bg-white/90",
 };
 
 const sizes = {

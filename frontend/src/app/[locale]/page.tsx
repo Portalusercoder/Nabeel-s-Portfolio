@@ -1,3 +1,4 @@
+import { LandingPreloader } from "@/components/home/LandingPreloader";
 import { HeroSection } from "@/components/home/HeroSection";
 import { WorksSection } from "@/components/home/WorksSection";
 import { StatsSection } from "@/components/home/StatsSection";
@@ -13,6 +14,7 @@ export default async function HomePage({ params }: PageProps) {
 
   return (
     <>
+      <LandingPreloader />
       <HeroSection />
       <WorksSection />
       <StatsSection />

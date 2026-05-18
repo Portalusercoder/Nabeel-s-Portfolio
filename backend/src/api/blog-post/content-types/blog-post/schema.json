@@ -21,6 +21,12 @@
       "targetField": "title",
       "required": true
     },
+    "language": {
+      "type": "enumeration",
+      "enum": ["ar", "en"],
+      "required": true,
+      "default": "ar"
+    },
     "excerpt": {
       "type": "text",
       "maxLength": 300
@@ -37,12 +43,10 @@
     },
     "author": {
       "type": "string",
-      "default": "Meridian Team"
+      "default": "نبيل الجابري"
     },
     "category": {
-      "type": "enumeration",
-      "enum": ["Strategy", "Design", "Development", "Marketing", "Insights"],
-      "default": "Insights"
+      "type": "string"
     },
     "readTime": {
       "type": "integer",

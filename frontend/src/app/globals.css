@@ -10,9 +10,10 @@
   --accent: #ffffff;
   --accent-muted: #2a2a2a;
   --pill: #1c1c1c;
-  --pill-text: #c9a87c;
+  --pill-text: #ffffff;
+  --accent-orange: #ffffff;
   --online: #3dff7a;
-  --cta-blue: #3b82f6;
+  --cta-blue: #ffffff;
 }
 
 @theme inline {
@@ -26,6 +27,7 @@
   --color-accent-muted: var(--accent-muted);
   --color-pill: var(--pill);
   --color-pill-text: var(--pill-text);
+  --color-accent-orange: var(--accent-orange);
   --color-online: var(--online);
   --color-cta-blue: var(--cta-blue);
   --font-sans: var(--font-arabic);
@@ -46,7 +48,7 @@ body {
 }
 
 ::selection {
-  background: rgba(201, 168, 124, 0.25);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .prose-custom h2 {
@@ -74,7 +76,7 @@ body {
   padding: 0.35rem 0.85rem;
   border-radius: 9999px;
   background: var(--pill);
-  color: var(--pill-text);
+  color: var(--foreground);
   font-size: 0.8rem;
   white-space: nowrap;
 }

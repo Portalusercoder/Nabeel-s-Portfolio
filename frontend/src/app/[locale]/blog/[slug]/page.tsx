@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
-import { getBlogPost, getBlogPosts } from "@/lib/strapi";
-import { getMockBlogPosts } from "@/lib/mock-data";
+import { getBlogPost } from "@/lib/strapi";
+import { getDisplayBlogPosts } from "@/lib/blog-posts";
 import { getTranslations } from "@/lib/i18n/server";
 import { LOCALES, type Locale } from "@/lib/i18n/types";
 import { withLocale } from "@/lib/i18n/routing";
@@ -12,9 +12,8 @@ import { formatDate } from "@/lib/utils";
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateStaticParams() {
-  const posts = await getBlogPosts();
-  const ar = posts.length > 0 ? posts : getMockBlogPosts("ar");
-  const en = getMockBlogPosts("en");
+  const ar = await getDisplayBlogPosts("ar");
+  const en = await getDisplayBlogPosts("en");
   const slugs = new Set([...ar, ...en].map((p) => p.slug));
   return LOCALES.flatMap((locale) => [...slugs].map((slug) => ({ locale, slug })));
 }
@@ -22,8 +21,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: raw, slug } = await params;
   const { locale, dict } = await getTranslations(raw);
-  const mock = getMockBlogPosts(locale);
-  const post = (await getBlogPost(slug)) || mock.find((p) => p.slug === slug);
+  const posts = await getDisplayBlogPosts(locale);
+  const post = (await getBlogPost(slug, locale)) || posts.find((p) => p.slug === slug);
   if (!post) return { title: dict.blog.notFound };
   return { title: post.title, description: post.excerpt };
 }
@@ -32,8 +31,15 @@ export default async function BlogPostPage({ params }: Props) {
   const { locale: raw, slug } = await params;
   const { locale, dict } = await getTranslations(raw);
   const validLocale = locale as Locale;
-  const mock = getMockBlogPosts(validLocale);
-  const post = (await getBlogPost(slug)) || mock.find((p) => p.slug === slug);
+  const posts = await getDisplayBlogPosts(validLocale);
+  const strapiPost = await getBlogPost(slug, validLocale);
+  const mockMatch = posts.find((p) => p.slug === slug);
+  const post = strapiPost
+    ? {
+        ...strapiPost,
+        coverImage: strapiPost.coverImage?.url ? strapiPost.coverImage : (mockMatch?.coverImage ?? null),
+      }
+    : mockMatch;
   if (!post) notFound();
 
   const Arrow = validLocale === "ar" ? ArrowLeft : ArrowRight;

@@ -10,16 +10,21 @@ import {
   Trash2,
   Pencil,
   ExternalLink,
+  RefreshCw,
+  CloudOff,
+  Cloud,
 } from "lucide-react";
 import {
   getAdminStats,
-  getBlogPosts,
+  getAdminBlogPosts,
   getSubscribers,
   deleteBlogPost,
+  syncBlogPostsFromSite,
+  isStrapiAvailable,
   type BlogPost,
   type NewsletterSubscriber,
 } from "@/lib/strapi";
-import { getMockBlogPosts } from "@/lib/mock-data";
+import { mergeAdminBlogPosts } from "@/lib/blog-posts";
 import { getToken, clearToken } from "@/lib/auth";
 import { Button } from "@/components/ui/Button";
 import { BlogPostModal } from "@/components/admin/BlogPostModal";
@@ -38,6 +43,9 @@ export function AdminDashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [strapiOnline, setStrapiOnline] = useState<boolean | null>(null);
+  const [strapiPostCount, setStrapiPostCount] = useState(0);
 
   useEffect(() => {
     const t = getToken();
@@ -47,23 +55,41 @@ export function AdminDashboard() {
     }
     setTokenState(t);
     loadData(t);
-  }, [router]);
+  }, [router, locale]);
 
   async function loadData(jwt: string) {
     setLoading(true);
     try {
+      const online = await isStrapiAvailable();
+      setStrapiOnline(online);
+
       const [s, p, subs] = await Promise.all([
         getAdminStats(jwt),
-        getBlogPosts(),
+        online ? getAdminBlogPosts(jwt, locale) : Promise.resolve([]),
         getSubscribers(jwt),
       ]);
       setStats(s);
-      setPosts(p.length > 0 ? p : getMockBlogPosts(locale));
+      setStrapiPostCount(p.length);
+      setPosts(mergeAdminBlogPosts(p, locale));
       setSubscribers(subs);
     } catch {
-      setPosts(getMockBlogPosts(locale));
+      setStrapiOnline(false);
+      setPosts(mergeAdminBlogPosts([], locale));
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSync() {
+    if (!token) return;
+    setSyncing(true);
+    try {
+      await syncBlogPostsFromSite(token);
+      await loadData(token);
+    } catch {
+      alert(dict.admin.syncFailed);
+    } finally {
+      setSyncing(false);
     }
   }
 
@@ -84,6 +110,8 @@ export function AdminDashboard() {
   }
 
   if (!token) return null;
+
+  const localOnlyCount = posts.filter((p) => !p.documentId).length;
 
   return (
     <div className="min-h-screen bg-accent-soft">
@@ -116,12 +144,50 @@ export function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
+        {strapiOnline === false && (
+          <p className="mb-6 flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted">
+            <CloudOff className="h-4 w-4 shrink-0" />
+            {dict.admin.strapiOffline}
+          </p>
+        )}
+
+        {strapiOnline && localOnlyCount > 0 && (
+          <p className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3 text-sm">
+            <span className="text-muted">{dict.admin.localOnlyHint.replace("{count}", String(localOnlyCount))}</span>
+            <button
+              type="button"
+              onClick={handleSync}
+              disabled={syncing}
+              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition hover:bg-accent-soft disabled:opacity-50"
+            >
+              <RefreshCw className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`} />
+              {syncing ? dict.admin.syncing : dict.admin.syncFromSite}
+            </button>
+          </p>
+        )}
+
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <StatCard icon={FileText} label={dict.admin.blogPostsStat} value={stats.postCount || posts.length} />
+          <StatCard icon={FileText} label={dict.admin.blogPostsStat} value={stats.postCount || strapiPostCount} />
           <StatCard icon={Mail} label={dict.admin.newsletterStat} value={stats.subscriberCount} />
           <div className="rounded-2xl border border-border bg-card p-6">
-            <p className="text-sm text-muted">{dict.admin.strapiBackend}</p>
-            <p className="mt-2 text-sm font-medium">{dict.admin.strapiNote}</p>
+            <p className="flex items-center gap-2 text-sm text-muted">
+              {strapiOnline ? <Cloud className="h-4 w-4 text-[var(--online)]" /> : <CloudOff className="h-4 w-4" />}
+              {dict.admin.strapiBackend}
+            </p>
+            <p className="mt-2 text-sm font-medium">
+              {strapiOnline ? dict.admin.strapiConnected : dict.admin.strapiOfflineShort}
+            </p>
+            {strapiOnline && (
+              <button
+                type="button"
+                onClick={handleSync}
+                disabled={syncing}
+                className="mt-4 inline-flex items-center gap-2 text-sm text-gold hover:underline disabled:opacity-50"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin" : ""}`} />
+                {syncing ? dict.admin.syncing : dict.admin.syncFromSite}
+              </button>
+            )}
           </div>
         </div>
 
@@ -145,7 +211,10 @@ export function AdminDashboard() {
         {tab === "posts" && (
           <section className="mt-8">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-medium">{dict.admin.posts}</h2>
+              <h2 className="text-lg font-medium">
+                {dict.admin.posts}
+                <span className="ms-2 text-sm font-normal text-muted">({locale.toUpperCase()})</span>
+              </h2>
               <Button
                 size="sm"
                 onClick={() => {
@@ -166,15 +235,27 @@ export function AdminDashboard() {
                     <tr>
                       <th className="px-6 py-4 font-medium">{dict.admin.titleLabel}</th>
                       <th className="px-6 py-4 font-medium">{dict.admin.category}</th>
+                      <th className="px-6 py-4 font-medium">{dict.admin.statusCol}</th>
                       <th className="px-6 py-4 font-medium">{dict.admin.date}</th>
                       <th className="px-6 py-4 font-medium">{dict.admin.actions}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {posts.map((post) => (
-                      <tr key={post.id} className="border-b border-border last:border-0">
+                      <tr key={`${post.slug}-${post.id}`} className="border-b border-border last:border-0">
                         <td className="px-6 py-4">{post.title}</td>
                         <td className="px-6 py-4 text-muted">{post.category}</td>
+                        <td className="px-6 py-4">
+                          {post.documentId ? (
+                            <span className="rounded-full bg-accent-soft px-2 py-0.5 text-xs text-muted">
+                              {dict.admin.inStrapi}
+                            </span>
+                          ) : (
+                            <span className="rounded-full border border-dashed border-border px-2 py-0.5 text-xs text-muted">
+                              {dict.admin.localOnly}
+                            </span>
+                          )}
+                        </td>
                         <td className="px-6 py-4 text-muted">
                           {post.publishedAt ? formatDate(post.publishedAt, locale) : "—"}
                         </td>
@@ -194,7 +275,8 @@ export function AdminDashboard() {
                             <button
                               type="button"
                               onClick={() => handleDelete(post)}
-                              className="rounded-lg p-2 text-red-600 hover:bg-red-50"
+                              disabled={!post.documentId}
+                              className="rounded-lg p-2 text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-30"
                               aria-label="Delete"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -251,6 +333,7 @@ export function AdminDashboard() {
         <BlogPostModal
           open={modalOpen}
           token={token}
+          locale={locale}
           post={editingPost}
           onClose={() => setModalOpen(false)}
           onSaved={() => {

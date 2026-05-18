@@ -8,6 +8,8 @@ export function getStrapiURL(path = "") {
 export function getStrapiMedia(url: string | null | undefined) {
   if (!url) return null;
   if (url.startsWith("http") || url.startsWith("//")) return url;
+  // Only Strapi uploads — keep /images/… and other site paths on the Next origin
+  if (!url.startsWith("/uploads/")) return url;
   return getStrapiURL(url);
 }
 
@@ -30,6 +32,51 @@ function normalizeEntity<T extends Record<string, unknown>>(
   }
   const { id, documentId, ...rest } = item;
   return { id, documentId, ...rest } as T & { id: number; documentId?: string };
+}
+
+type CoverInput =
+  | BlogPost["coverImage"]
+  | { data?: { url?: string; alternativeText?: string } | null }
+  | { url?: string; alternativeText?: string }
+  | null
+  | undefined;
+
+/** Normalize Strapi media (relative /uploads/… or nested data) to an absolute URL. */
+export function resolveBlogCoverImage(
+  coverImage: CoverInput
+): BlogPost["coverImage"] {
+  if (!coverImage || typeof coverImage !== "object") return null;
+
+  let rawUrl: string | undefined;
+  let alternativeText: string | undefined;
+
+  if ("data" in coverImage) {
+    const data = coverImage.data;
+    if (data && typeof data === "object" && "url" in data && typeof data.url === "string") {
+      rawUrl = data.url;
+      alternativeText = data.alternativeText;
+    }
+  } else if ("url" in coverImage && typeof coverImage.url === "string") {
+    rawUrl = coverImage.url;
+    alternativeText =
+      "alternativeText" in coverImage ? coverImage.alternativeText : undefined;
+  }
+
+  if (!rawUrl) return null;
+
+  return {
+    url: getStrapiMedia(rawUrl)!,
+    alternativeText,
+  };
+}
+
+function normalizeCoverImage(post: BlogPost): BlogPost {
+  post.coverImage = resolveBlogCoverImage(post.coverImage);
+  return post;
+}
+
+function languageFilter(language: string) {
+  return `filters[language][$eq]=${language}`;
 }
 
 export async function fetchAPI<T>(
@@ -73,6 +120,7 @@ export type BlogPost = {
   documentId?: string;
   title: string;
   slug: string;
+  language?: "ar" | "en";
   excerpt?: string;
   content: string;
   author?: string;
@@ -105,45 +153,50 @@ export type NewsletterSubscriber = {
   subscribedAt?: string;
 };
 
-export async function getBlogPosts(): Promise<BlogPost[]> {
+export async function isStrapiAvailable(): Promise<boolean> {
+  try {
+    const res = await fetch(getStrapiURL("/api/blog-posts?pagination[pageSize]=1"), {
+      cache: "no-store",
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
   try {
     const res = await fetchAPI<StrapiResponse<StrapiEntity<BlogPost>[]>>(
-      "/blog-posts?populate=coverImage&sort=publishedAt:desc&publicationState=live"
+      `/blog-posts?${languageFilter(locale)}&populate=coverImage&sort=publishedAt:desc&publicationState=live`
     );
-    return (res.data || []).map((item) => {
-      const post = normalizeEntity(item);
-      if (post.coverImage && typeof post.coverImage === "object" && "data" in post.coverImage) {
-        const media = (post.coverImage as { data?: { url?: string; alternativeText?: string } }).data;
-        post.coverImage = media?.url
-          ? { url: getStrapiMedia(media.url)!, alternativeText: media.alternativeText }
-          : null;
-      } else if (post.coverImage && "url" in (post.coverImage as object)) {
-        const img = post.coverImage as { url: string; alternativeText?: string };
-        post.coverImage = { url: getStrapiMedia(img.url)!, alternativeText: img.alternativeText };
-      }
-      return post;
-    });
+    return (res.data || []).map((item) => normalizeCoverImage(normalizeEntity(item)));
   } catch {
     return [];
   }
 }
 
-export async function getBlogPost(slug: string): Promise<BlogPost | null> {
+export async function getBlogPost(slug: string, locale: string): Promise<BlogPost | null> {
   try {
     const res = await fetchAPI<StrapiResponse<StrapiEntity<BlogPost>[]>>(
-      `/blog-posts?filters[slug][$eq]=${slug}&populate=coverImage&publicationState=live`
+      `/blog-posts?filters[slug][$eq]=${slug}&${languageFilter(locale)}&populate=coverImage&publicationState=live`
     );
     const raw = res.data?.[0];
     if (!raw) return null;
-    const post = normalizeEntity(raw);
-    if (post.coverImage && typeof post.coverImage === "object" && "url" in post.coverImage) {
-      const img = post.coverImage as { url: string };
-      post.coverImage = { url: getStrapiMedia(img.url)! };
-    }
-    return post;
+    return normalizeCoverImage(normalizeEntity(raw));
   } catch {
     return null;
   }
+}
+
+export async function getAdminBlogPosts(
+  token: string,
+  locale: string
+): Promise<BlogPost[]> {
+  const res = await fetchAPI<StrapiResponse<StrapiEntity<BlogPost>[]>>(
+    `/blog-posts?${languageFilter(locale)}&populate=coverImage&sort=publishedAt:desc&pagination[pageSize]=100&publicationState=preview`,
+    { token }
+  );
+  return (res.data || []).map((item) => normalizeCoverImage(normalizeEntity(item)));
 }
 
 export async function getResources(): Promise<Resource[]> {
@@ -206,15 +259,26 @@ export async function getSubscribers(token: string): Promise<NewsletterSubscribe
   return (res.data || []).map(normalizeEntity);
 }
 
+export async function syncBlogPostsFromSite(token: string) {
+  return fetchAPI<{ data: { created: number; skipped: number; message: string } }>(
+    "/blog-posts/sync-from-site",
+    { method: "POST", token }
+  );
+}
+
 export async function createBlogPost(
   token: string,
-  data: Partial<BlogPost> & { title: string; content: string }
+  data: Partial<BlogPost> & { title: string; content: string; language: "ar" | "en" }
 ) {
-  return fetchAPI("/blog-posts", {
-    method: "POST",
-    token,
-    body: JSON.stringify({ data }),
-  });
+  const res = await fetchAPI<StrapiResponse<StrapiEntity<BlogPost>>>(
+    "/blog-posts?status=published",
+    {
+      method: "POST",
+      token,
+      body: JSON.stringify({ data }),
+    }
+  );
+  return res;
 }
 
 export async function updateBlogPost(
@@ -222,7 +286,7 @@ export async function updateBlogPost(
   documentId: string,
   data: Partial<BlogPost>
 ) {
-  return fetchAPI(`/blog-posts/${documentId}`, {
+  return fetchAPI(`/blog-posts/${documentId}?status=published`, {
     method: "PUT",
     token,
     body: JSON.stringify({ data }),
