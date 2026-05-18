@@ -34,6 +34,8 @@ jobs:
           NEXT_PUBLIC_STATIC_EXPORT: "true"
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           NEXT_PUBLIC_SITE_URL: https://${{ github.event.repository.owner }}.github.io/${{ github.event.repository.name }}
+          # Optional: GitHub repo secret NEXT_PUBLIC_STRAPI_URL (e.g. https://nabeel-strapi.onrender.com)
+          NEXT_PUBLIC_STRAPI_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_URL }}
         run: |
           npm ci
           npm run build
