@@ -190,6 +190,26 @@ export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
   }
 }
 
+/** All published posts (for static path generation at build time). */
+export async function getAllPublishedBlogPaths(): Promise<
+  { locale: "ar" | "en"; slug: string }[]
+> {
+  try {
+    const res = await fetchAPI<StrapiResponse<StrapiEntity<BlogPost>[]>>(
+      "/blog-posts?status=published&pagination[pageSize]=100&sort=publishedAt:desc"
+    );
+    return (res.data || [])
+      .map((item) => normalizeEntity(item))
+      .filter(
+        (p): p is BlogPost & { language: "ar" | "en"; slug: string } =>
+          Boolean(p.slug && (p.language === "ar" || p.language === "en"))
+      )
+      .map((p) => ({ locale: p.language, slug: p.slug }));
+  } catch {
+    return [];
+  }
+}
+
 export async function getBlogPost(slug: string, locale: string): Promise<BlogPost | null> {
   try {
     const res = await fetchAPI<StrapiResponse<StrapiEntity<BlogPost>[]>>(

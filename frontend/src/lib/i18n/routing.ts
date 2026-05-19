@@ -43,3 +43,21 @@ export function getLocaleFromPathname(pathname: string): Locale {
   const first = pathname.split("/").filter(Boolean)[0];
   return isValidLocale(first) ? first : DEFAULT_LOCALE;
 }
+
+/** Parse /{locale}/blog/{slug} from a pathname (supports GitHub Pages base path). */
+export function parseBlogPostPath(pathname: string): { locale: Locale; slug: string } | null {
+  const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  let path = pathname;
+
+  if (base) {
+    if (path === base || path === `${base}/`) path = "/";
+    else if (path.startsWith(`${base}/`)) path = path.slice(base.length);
+  }
+
+  if (!path.startsWith("/")) path = `/${path}`;
+
+  const match = path.match(/^\/(ar|en)\/blog\/([^/]+)\/?$/);
+  if (!match || !isValidLocale(match[1])) return null;
+
+  return { locale: match[1], slug: decodeURIComponent(match[2]) };
+}

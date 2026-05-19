@@ -6,6 +6,7 @@ import type { BlogPost } from "@/lib/strapi";
 import type { Locale } from "@/lib/i18n/types";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { BlogPostGrid } from "@/components/blog/BlogPostGrid";
+import { BlogPostGridSkeleton } from "@/components/blog/BlogPostGridSkeleton";
 
 /** On GitHub Pages, refresh posts from Strapi in the browser (build output is static). */
 export function LiveBlogList({
@@ -45,12 +46,9 @@ export function LiveBlogList({
     };
   }, [locale]);
 
-  return (
-    <>
-      {loading && (
-        <p className="mb-6 text-center text-sm text-muted">{dict.blog.loadingFromStrapi}</p>
-      )}
-      <BlogPostGrid posts={posts} locale={locale} dict={dict} />
-    </>
-  );
+  if (loading) {
+    return <BlogPostGridSkeleton count={Math.min(initialPosts.length || 6, 6)} />;
+  }
+
+  return <BlogPostGrid posts={posts} locale={locale} dict={dict} />;
 }
