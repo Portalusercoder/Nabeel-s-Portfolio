@@ -84,6 +84,7 @@ export type Dictionary = {
     minRead: string;
     byAuthor: string;
     notFound: string;
+    loadingFromStrapi: string;
   };
   resources: {
     title: string;
@@ -120,6 +121,7 @@ export type Dictionary = {
     invalidLogin: string;
     strapiLink: string;
     strapiAdmin: string;
+    openingStrapi: string;
     logout: string;
     posts: string;
     subscribers: string;
@@ -190,7 +192,7 @@ const ar: Dictionary = {
   footer: {
     newsletter: "المدونة",
     bookConsultation: "تواصل معي",
-    admin: "لوحة التحكم",
+    admin: "لوحة Strapi",
   },
   hero: {
     cards: [
@@ -288,6 +290,7 @@ const ar: Dictionary = {
     minRead: "دقائق",
     byAuthor: "بقلم",
     notFound: "المقال غير موجود",
+    loadingFromStrapi: "جاري تحميل المقالات من Strapi…",
   },
   resources: {
     title: "كتيب تجهيز الحملات",
@@ -344,6 +347,7 @@ const ar: Dictionary = {
     invalidLogin: "بيانات الدخول غير صحيحة",
     strapiLink: "أو استخدم",
     strapiAdmin: "لوحة Strapi",
+    openingStrapi: "جاري فتح لوحة Strapi…",
     logout: "تسجيل الخروج",
     posts: "المقالات",
     subscribers: "المشتركون",
@@ -419,7 +423,7 @@ const en: Dictionary = {
   footer: {
     newsletter: "Blog",
     bookConsultation: "Contact me",
-    admin: "Dashboard",
+    admin: "Strapi admin",
   },
   hero: {
     cards: [
@@ -517,6 +521,7 @@ const en: Dictionary = {
     minRead: "min read",
     byAuthor: "By",
     notFound: "Article not found",
+    loadingFromStrapi: "Loading posts from Strapi…",
   },
   resources: {
     title: "Campaign preparation guide",
@@ -573,6 +578,7 @@ const en: Dictionary = {
     invalidLogin: "Invalid credentials",
     strapiLink: "Or use",
     strapiAdmin: "Strapi admin",
+    openingStrapi: "Opening Strapi admin…",
     logout: "Log out",
     posts: "Posts",
     subscribers: "Subscribers",

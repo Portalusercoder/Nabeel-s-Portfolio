@@ -182,7 +182,7 @@ export async function isStrapiAvailable(): Promise<boolean> {
 export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
   try {
     const res = await fetchAPI<StrapiResponse<StrapiEntity<BlogPost>[]>>(
-      `/blog-posts?${languageFilter(locale)}&populate=coverImage&sort=publishedAt:desc&publicationState=live`
+      `/blog-posts?${languageFilter(locale)}&populate=coverImage&sort=publishedAt:desc&status=published&pagination[pageSize]=100`
     );
     return (res.data || []).map((item) => normalizeCoverImage(normalizeEntity(item)));
   } catch {
@@ -193,7 +193,7 @@ export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
 export async function getBlogPost(slug: string, locale: string): Promise<BlogPost | null> {
   try {
     const res = await fetchAPI<StrapiResponse<StrapiEntity<BlogPost>[]>>(
-      `/blog-posts?filters[slug][$eq]=${slug}&${languageFilter(locale)}&populate=coverImage&publicationState=live`
+      `/blog-posts?filters[slug][$eq]=${slug}&${languageFilter(locale)}&populate=coverImage&status=published`
     );
     const raw = res.data?.[0];
     if (!raw) return null;

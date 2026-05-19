@@ -15,8 +15,8 @@ Premium dark RTL website inspired by modern Arabic agency/portfolio design, with
 | Blog | `/blog` | Article grid (Strapi + fallback mock data) |
 | Article | `/blog/[slug]` | Single post |
 | Resources | `/resources` | Downloads, newsletter, contact |
-| Admin | `/admin` | Dashboard: posts CRUD, newsletter signups |
-| Strapi Admin | `http://localhost:1337/admin` | Full CMS UI |
+| Strapi Admin | `http://localhost:1337/admin` (live: your Render URL + `/admin`) | Edit blog, resources, newsletter |
+| `/admin` | Redirects to Strapi admin | Optional shortcut from footer |
 
 ## Quick start
 
@@ -30,7 +30,7 @@ npm install
 npm run develop
 ```
 
-On first run, create an admin user at http://localhost:1337/admin, then create an **Authenticated** user for the Next.js dashboard (Settings → Users).
+On first run, create an admin user at http://localhost:1337/admin. All content editing is done in Strapi — there is no separate site login.
 
 ### 2. Frontend
 
@@ -108,8 +108,6 @@ Host Strapi for **$0** (with Render free-tier sleep after ~15 min idle).
 
 4. Deploy → open `https://YOUR-SERVICE.onrender.com/admin` and create the admin user (first visit may be slow while the free instance wakes up).
 
-5. In Strapi: **Settings → Users** → create an **Authenticated** user for the portfolio dashboard at `/ar/admin`.
-
 **Note:** Uploads on Render free use local disk and can reset on redeploy. For production media, add S3 or Cloudinary later.
 
 #### 3. Connect GitHub Pages to Strapi
@@ -120,7 +118,7 @@ Host Strapi for **$0** (with Render free-tier sleep after ~15 min idle).
 
 Then push to `main` or re-run **Deploy to GitHub Pages**. The URL is baked in at build time.
 
-Blog pages are still **pre-built** on each deploy; new Strapi posts appear after the workflow runs again. The **portfolio admin** (`/ar/admin`) loads live data in the browser.
+Blog list pages **refresh from Strapi in the browser** on GitHub Pages. New post **URLs** still need a GitHub Pages redeploy to generate `/blog/[slug]` HTML.
 
 ### Other hosting
 

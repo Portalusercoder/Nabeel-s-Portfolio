@@ -18,10 +18,14 @@ export function LiveBlogList({
   dict: Dictionary;
 }) {
   const [posts, setPosts] = useState(initialPosts);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
     getDisplayBlogPosts(locale)
       .then((live) => {
+        if (cancelled) return;
         setPosts(
           [...live].sort((a, b) => {
             const da = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
@@ -31,9 +35,22 @@ export function LiveBlogList({
         );
       })
       .catch(() => {
-        /* keep build-time posts */
+        /* keep build-time posts if Strapi unreachable */
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
+    return () => {
+      cancelled = true;
+    };
   }, [locale]);
 
-  return <BlogPostGrid posts={posts} locale={locale} dict={dict} />;
+  return (
+    <>
+      {loading && (
+        <p className="mb-6 text-center text-sm text-muted">{dict.blog.loadingFromStrapi}</p>
+      )}
+      <BlogPostGrid posts={posts} locale={locale} dict={dict} />
+    </>
+  );
 }

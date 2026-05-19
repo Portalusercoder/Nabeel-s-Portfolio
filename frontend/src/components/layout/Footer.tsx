@@ -3,6 +3,7 @@
 import { SITE_EMAIL } from "@/lib/constants";
 import { LocaleLink } from "@/components/layout/LocaleLink";
 import { useLocale } from "@/lib/i18n/locale-provider";
+import { getConfiguredStrapiUrl } from "@/lib/strapi";
 
 export function Footer() {
   const { dict } = useLocale();
@@ -21,9 +22,14 @@ export function Footer() {
           <LocaleLink href="/resources#contact" className="hover:text-foreground">
             {dict.footer.bookConsultation}
           </LocaleLink>
-          <LocaleLink href="/admin" className="hover:text-foreground">
+          <a
+            href={`${getConfiguredStrapiUrl()}/admin`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground"
+          >
             {dict.footer.admin}
-          </LocaleLink>
+          </a>
         </div>
       </div>
     </footer>
