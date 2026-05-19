@@ -22,7 +22,7 @@ export default async function ResourcesPage({ params }: PageProps) {
   return (
     <div className="px-5 pb-20 pt-10 lg:px-8 lg:pb-28 lg:pt-14">
       <div className="mx-auto max-w-6xl">
-        <header className="max-w-3xl">
+        <header className="mx-auto max-w-3xl text-center">
           <div className="mb-6 inline-flex overflow-hidden rounded-full border border-border text-xs font-medium">
             <span className="bg-pill-text px-4 py-2 text-black">{dict.resources.badgeYear}</span>
             <span className="bg-card px-4 py-2 text-muted">{dict.resources.badgeLabel}</span>
@@ -30,10 +30,10 @@ export default async function ResourcesPage({ params }: PageProps) {
           <h1 className="text-3xl font-semibold leading-[1.35] tracking-tight sm:text-4xl lg:text-[2.75rem]">
             {dict.resources.heroTitle}
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted lg:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted lg:text-lg">
             {dict.resources.heroSubtitle}
           </p>
-          <div className="mt-8">
+          <div className="mt-8 flex justify-center">
             <Button href="#getfile" size="lg">
               {dict.resources.getFileCta}
             </Button>
